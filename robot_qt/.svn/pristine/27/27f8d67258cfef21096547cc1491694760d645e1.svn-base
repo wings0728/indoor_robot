@@ -1,0 +1,119 @@
+#include "T3GuideTaskDB.hpp"
+
+
+namespace interface
+{
+
+T3GuideTaskDB::T3GuideTaskDB()
+{
+    _taskDB = T3TaskDatabase::getInstance();
+}
+
+int T3GuideTaskDB::addNewGuideTask(model::T3GuideTask guideTask)
+{
+  QSqlQuery query_;
+  int taskId_ = _taskDB->addNewTask(guideTask);
+
+  query_.prepare("insert into T3NavigationTask values(NULL,?,?,?,?)");
+
+
+  QByteArray planArray_;
+  QListToByteArray(guideTask.getPlan(),
+                   planArray_);
+  query_.bindValue(0,taskId_);
+  query_.bindValue(1,planArray_,QSql::Binary);
+  int positionId = _positionDB.addNewPosition(guideTask.getPosition());
+  query_.bindValue(2,positionId);
+  query_.bindValue(3,static_cast<int>(guideTask.getGuideState()));
+  int ret_ = query_.exec();
+  if(ret_)
+  {
+
+    query_.exec("select max(id) from T3Navigation");
+    query_.next();
+    return query_.value(0).toInt();
+
+  }else
+  {
+    T3LOG << "insert navigation failed";
+    return -1;
+  }
+
+}
+
+int T3GuideTaskDB::getGuideTaskModelByTask(model::T3TaskModel task,
+                                             model::T3GuideTask guideTask)
+{
+  QSqlQuery query_;
+  query_.prepare("select * from T3Navigation where TaskId = ?");
+  query_.bindValue(0,task.getId());
+  bool ret_ = query_.exec();
+  if(!ret_)
+  {
+    T3LOG << "search navigation failed";
+    return -1;
+  }
+  query_.next();
+  QByteArray planByteArray_ = query_.value(2).toByteArray();
+  QList<std::pair<double, double> > plan_;
+  QByteArrayToQList(planByteArray_,
+                    plan_);
+  int distinationId_ = query_.value(3).toInt();
+  T3PositionModel positionModel_;
+  _positionDB.getPositionById(distinationId_,
+                              positionModel_);
+  int guideState_ = query_.value(4).toInt();
+
+  guideTask.setId(task.getId());
+  guideTask.setType(task.getType());
+  guideTask.setSender(task.getSender());
+  guideTask.setPriority(task.getPriority());
+  guideTask.setState(task.getState());
+  guideTask.setGuideState(static_cast<int>(guideState_));
+  guideTask.setPlan(plan_);
+  guideTask.setPosition(positionModel_);
+
+  return 0;
+}
+
+int T3GuideTaskDB::QListToByteArray(QList<std::pair <double, double> > &plan,
+                                    QByteArray &planByteArray)
+{
+  QDataStream out(&planByteArray ,
+                  QIODevice::WriteOnly);
+
+  out << (qint32)plan.length();
+  for(int i = 0; i < plan.length() ; i++)
+  {
+    out << (qint32)(plan.at(i).first * 100);
+    out << (qint32)(plan.at(i).second * 100);
+  }
+
+  return 0;
+}
+
+int T3GuideTaskDB::QByteArrayToQList(QByteArray planBytaArray,
+                                     QList<std::pair <double, double> > &plan)
+{
+  QDataStream in(&planBytaArray,
+                 QIODevice::ReadOnly);
+  qint32 planPointNum_ = 0;
+  in >> planPointNum_;
+  for(int i = 0;i <= planPointNum_ ;i++ )
+  {
+    qint32 x_;
+    qint32 y_;
+    in >> x_;
+    in >> y_;
+
+    std::pair<double,double> planPoint_;
+    //数据库里存储得为整数类型,转换为有两位小数得double类型
+    planPoint_.first = (double)(x_ / 100);
+    planPoint_.second = (double)(y_ / 100);
+    plan.append(planPoint_);
+  }
+  return 0;
+}
+
+}
+

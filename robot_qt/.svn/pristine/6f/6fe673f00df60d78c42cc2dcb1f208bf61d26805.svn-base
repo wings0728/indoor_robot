@@ -1,0 +1,54 @@
+#ifndef T3TASKSCHEDULING_HPP
+#define T3TASKSCHEDULING_HPP
+/**
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  T3TaskScheduling.hpp
+  * 作者    HXP
+  * 版本    V1.0.0
+  * 日期    2018.04.19
+  * 说明    任务调度类
+  ******************************************************************************
+*/
+
+#include "T3Task.hpp"
+#include "../T3base/T3IOBase.hpp"
+#include "../model/T3TaskModel.hpp"
+#include "../database/T3TaskDatabase.hpp"
+namespace task
+{
+
+class T3TaskScheduling : public QObject
+{
+  Q_OBJECT
+public:
+  static T3TaskScheduling* getInstance();
+  ~T3TaskScheduling();
+
+private:
+
+  explicit T3TaskScheduling();
+
+  int startTaskScheduling();
+
+  int initTaskScheduing();
+  static T3TaskScheduling       *_taskScheduling;
+  interface::T3TaskDatabase     *_taskDB;
+  T3Task                        *_task;
+
+  QList<model::T3TaskModel>     _taskListZero;
+  QList<model::T3TaskModel>     _taskListFirst;
+  QList<model::T3TaskModel>     _taskListSecond;
+  QList<model::T3TaskModel>     _taskListThird;
+  bool                          _beTasking;
+
+
+private slots:
+  void getNewTask(model::T3TaskModel task);
+  void taskFinish();
+};
+
+}
+
+
+#endif // T3TASKSCHEDULING_HPP

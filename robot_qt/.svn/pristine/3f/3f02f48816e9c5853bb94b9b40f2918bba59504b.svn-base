@@ -1,0 +1,116 @@
+/**
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  T3UserController.cpp
+  * 作者    Jincheng
+  * 版本    V1.0.0
+  * 日期    2018.04.16
+  * 说明
+  ******************************************************************************
+*/
+#include "T3UserController.hpp"
+#include "../../config/config.hpp"
+#include <qdatetime.h>
+#include <QTimer>
+
+#define kBattaryPath "://images/battary_50.png"
+#define kBluetoothPath "://images/bluetooth_normal.png"
+#define kWifiPath "://images/wifiSignal_full.png"
+
+T3UserController::T3UserController(const QString &bgPath,bool showBackIcon, T3BaseController *parent):
+  T3BaseController(0, 0, kScreenW, kScreenH, bgPath, showBackIcon, parent)
+{
+  updateTimeStr();
+  setTimeLabel();
+  setStateLabel();
+  setupQTime();
+}
+
+T3UserController::~T3UserController()
+{
+  delete _battaryIcon;
+  delete _bluetoothIcon;
+  delete _wifiIcon;
+  delete _timeLabel;
+  _battaryIcon = NULL;
+  _bluetoothIcon = NULL;
+  _wifiIcon = NULL;
+  _timeLabel = NULL;
+}
+
+void T3UserController::updateTimeStr()
+{
+    QDateTime date =QDateTime::currentDateTime();
+    QString year = date.toString("yyyy");
+    QString month = date.toString("MM");
+    QString day = date.toString("dd");
+    QString hour = date.toString("hh");
+    QString min = date.toString("mm");
+    _timeStr = year + "." + month + "." + day;
+    if(hour.toInt() > 12)
+    {
+      hour = QString::number(hour.toInt() - 12, 10);
+      _timeStr += " PM " + hour + ":" + min;
+    }else
+    {
+      _timeStr += " AM " + hour + ":" + min;
+    }
+}
+
+void T3UserController::setTimeLabel()
+{
+  _timeLabel = new T3View::T3Label(this->_window,
+                                   kTimeX_uc,
+                                   kTimeY_uc,
+                                   kTimeW_uc,
+                                   kTimeH_uc,
+                                   _timeStr,
+                                   kTimeFontSize,
+                                   kTimeFontStyle,
+                                   kMainRGB,
+                                   QFont::Normal,
+                                   kTimeFontSpace
+                                   );
+
+}
+
+void T3UserController::setStateLabel()
+{
+  _battaryIcon = new T3View::T3Label(this->_window,
+                                    kBattaryX_uc,
+                                    kBattaryY_uc,
+                                    kBattaryW_uc,
+                                    kBattaryH_uc,
+                                    kBattaryPath
+                                    );
+  _bluetoothIcon = new T3View::T3Label(this->_window,
+                                    kBluetoothX_uc,
+                                    kBluetoothY_uc,
+                                    kBluetoothW_uc,
+                                    kBluetoothH_uc,
+                                    kBluetoothPath
+                                    );
+  _wifiIcon = new T3View::T3Label(this->_window,
+                                    kWifiX_uc,
+                                    kWifiY_uc,
+                                    kWifiW_uc,
+                                    kWifiH_uc,
+                                    kWifiPath
+                                    );
+}
+
+void T3UserController::setupQTime()
+{
+  QTimer *timer = new QTimer(this);
+  connect(timer,SIGNAL(timeout()),this,SLOT(updateTime()));
+  timer->start(1000);
+}
+
+/******** slot **********/
+void T3UserController::updateTime()
+{
+  updateTimeStr();
+  _timeLabel->setText(_timeStr);
+//  qDebug() << _timeStr;
+}
+

@@ -1,0 +1,261 @@
+#ifndef UI_CONFIG_H
+#define UI_CONFIG_H
+
+#define kScreenX 0
+#define kScreenY 0
+#define kScreenW 1280
+#define kScreenH 720
+
+/********* font **********/
+#define kTitleFontStyle "timer"
+#define kTitleFontSize 71
+#define kTitleFontSpace 100
+
+#define kTimeFontStyle "Aharoni"
+#define kTimeFontSize 25
+#define kTimeFontSpace 100
+
+#define kMainTitleFontStyle "Aharoni"
+#define kMainTitleFontSize 22
+#define kMainTitleFontSpace 100
+
+#define kMainTextFontStyle "Aharoni"
+#define kMainTextFontSize 58
+#define kMainTextFontSpace 100
+
+#define kCnTipsFontStyle "Aharoni"
+#define kCnTipsFontSize 20
+#define kCnTipsFontSpace 100
+#define kCnTipsRGB "255,255,255"
+
+#define kTitleFontStyle_sic "Aharoni"
+#define kTitleFontSize_sic 58
+#define kTitleFontSpace_sic 100
+
+#define kContentFontStyle_sic "Aharoni"
+#define kContentFontSize_sic 58
+#define kContentFontSpace_sic 100
+/********* baseController **********/
+#define kBackBtnW_bc (int)(kScreenW / 23)
+#define kBackBtnH_bc (int)(kScreenH / 10.7)
+#define kBackBtnX_bc (int)(kScreenW / 1.1)
+#define kBackBtnY_bc (int)(kScreenH / 19)
+
+/********* baseChoice **********/
+#define kTitleW_bc (int)(kScreenW)
+#define kTitleH_bc (int)(kScreenH / 8)
+#define kTitleX_bc (int)(0)
+#define kTitleY_bc (int)(kScreenH / 3.8)
+#define kTitleFontSize_bc 71
+
+#define kLeftBtnW_bc (int)(kScreenW / 5.2)
+#define kLeftBtnH_bc (int)kLeftBtnW_bc
+#define kLeftBtnX_bc (int)(kScreenW / 6.5)
+#define kLeftBtnY_bc (int)(kScreenH / 2.3)
+
+#define kRightBtnW_bc (int)(kScreenW / 5.2)
+#define kRightBtnH_bc (int)kRightBtnW_bc
+#define kRightBtnX_bc (int)(kScreenW / 1.5)
+#define kRightBtnY_bc (int)(kScreenH / 2.3)
+
+/********* expressFinish **********/
+#define kTitleW_ef (int)(kScreenW)
+#define kTitleY_ef (int)(kBackBtnY_bc + kBackBtnH_bc)
+#define kTitleH_ef (int)(kScreenH - kTitleY_ef)
+#define kTitleX_ef (int)(0)
+
+/********* userController **********/
+#define kTimeW_uc (int)(kScreenW / 2.87)
+#define kTimeH_uc (int)(kScreenH / 22)
+#define kTimeX_uc (int)(kScreenW / 21.7)
+#define kTimeY_uc (int)(kScreenH / 12)
+
+#define kBattaryW_uc (int)(kScreenW / 20.6)
+#define kBattaryH_uc (int)(kScreenH / 20)
+#define kBattaryX_uc (int)(kScreenW / 1.32)
+#define kBattaryY_uc (int)(kScreenH / 13.58)
+
+
+/********* BeginController **********/
+#define kBootCoinW_bgc (int)(kScreenW/4.7)
+#define kBootCoinH_bgc (int)(kScreenH/2.4)
+#define kBootCoinX_bgc (int)(kScreenW/2.5)
+#define kBootCoinY_bgc (int)(kScreenH/3.4)
+
+#define kBluetoothW_uc (int)(kScreenW / 64)
+#define kBluetoothH_uc (int)(kScreenH / 16)
+#define kBluetoothX_uc (int)(kScreenW / 1.18)
+#define kBluetoothY_uc (int)(kBattaryY_uc)
+
+#define kWifiW_uc (int)(kScreenW / 20.3)
+#define kWifiH_uc (int)(kScreenH / 16)
+#define kWifiX_uc (int)(kScreenW / 1.11)
+#define kWifiY_uc (int)(kBattaryY_uc)
+
+/********* guestLoginController **********/
+#define kLeftBtnW_glc (int)(kScreenW / 5.2)
+#define kLeftBtnH_glc (int)(kLeftBtnW_glc)
+#define kLeftBtnX_glc (int)(kScreenW / 12.8)
+#define kLeftBtnY_glc (int)(kScreenH / 3.1)
+
+#define kCenterBtnW_glc kLeftBtnW_glc
+#define kCenterBtnH_glc kLeftBtnH_glc
+#define kCenterBtnX_glc (int)(kScreenW / 2.5)
+#define kCenterBtnY_glc kLeftBtnY_glc
+
+#define kRightBtnW_glc kLeftBtnW_glc
+#define kRightBtnH_glc kLeftBtnH_glc
+#define kRightBtnX_glc (int)(kScreenW / 1.4)
+#define kRightBtnY_glc kLeftBtnY_glc
+
+/********* WaitController **********/
+#define kMainTitleH_wc (int)(kScreenH/28.8)
+#define kMainTitleY_wc (int)(kScreenH/4.7)
+
+#define kMainTextH_wc (int)(kScreenH/10.5)
+#define kMainTextY_wc (int)(kScreenH/2.3)
+
+#define kCnTipsH_wc (int)(kScreenH/10)
+#define kCnTipsY_wc (int)(kScreenH/1.5)
+
+/********* GUideController **********/
+#define kBtnW_gc (int)(kScreenW / 5.1)
+#define kBtnH_gc kBtnW_gc
+#define kFirstBtnX_gc (int)(kScreenW / 11.7)
+#define kFirstBtnY_gc (int)(kScreenH / 7.42)
+#define kHSpace_gc (int)(kScreenH / 33.15)
+#define kVSpace_gc kHSpace_gc
+
+/********* StaffController **********/
+#define kLogisticsBtnW_sc (int) (kScreenW/6.7)
+#define kLogisticsBtnH_sc (int) (kScreenH/5.6)
+#define kLogisticsBtnX_sc (int) (kScreenW/3.8)
+#define kLogisticsBtnY_sc (int) (kScreenH/4.5)
+
+#define kHardwareBtnW_sc (int)(kScreenW/7.6)
+#define kHardwareBtnH_sc (int)(kScreenH/4.3)
+#define kHardwareBtnX_sc (int)(kScreenW/1.7)
+#define kHardwareBtnY_sc (int)(kScreenH/6)
+
+#define kVideoBtnW_sc (int)(kScreenW/7.5)
+#define kVideoBtnH_sc (int)(kScreenH/4.6)
+#define kVideoBtnX_sc (int)(kScreenW/9.2)
+#define kVideoBtnY_sc (int)(kScreenH/1.7)
+
+#define kAttendanceBtnW_sc (int)(kScreenW/7.5)
+#define kAttendanceBtnH_sc (int)(kScreenH/4.6)
+#define kAttendanceBtnX_sc (int)(kScreenW/2.3)
+#define kAttendanceBtnY_sc (int)(kScreenH/1.7)
+
+#define kGuideBtnW_sc (int)(kScreenW/7.5)
+#define kGuideBtnH_sc (int)(kScreenH/4.6)
+#define kGuideBtnX_sc (int)(kScreenW/1.3)
+#define kGuideBtnY_sc (int)(kScreenH/1.7)
+
+/********* HardwareStartController **********/
+#define kAirBtnW_hsc (int)(kScreenW/7)
+#define kAirBtnH_hsc (int)(kScreenH/3.9)
+#define kAirBtnX_hsc (int)(kScreenW/3)
+#define kAirBtnY_hsc (int)(kScreenH/5.2)
+
+#define kHumidifierBtnW_hsc (int)(kScreenW/7)
+#define kHumidifierBtnH_hsc (int)(kScreenH/3.9)
+#define kHumidifierBtnX_hsc (int)(kScreenW/1.9)
+#define kHumidifierBtnY_hsc (int)(kScreenH/5.2)
+
+#define kProjectionBtnW_hsc (int)(kScreenW/7)
+#define kProjectionBtnH_hsc (int)(kScreenH/3.9)
+#define kProjectionBtnX_hsc (int)(kScreenW/3)
+#define kProjectionBtnY_hsc (int)(kScreenH/1.8)
+
+#define kSweeperBtnW_hsc (int)(kScreenW/7)
+#define kSweeperBtnH_hsc (int)(kScreenH/3.9)
+#define kSweeperBtnX_hsc (int)(kScreenW/1.9)
+#define kSweeperBtnY_hsc (int)(kScreenH/1.8)
+
+/********* AirController **********/
+#define kAirLabelW_ac (int)(kScreenW/2.5)
+#define kAirLabelH_ac (int)(kScreenH/1.8)
+#define kAirLabelX_ac (int)(kScreenW/8.4)
+#define kAirLabelY_ac (int)(kScreenH/4.9)
+
+#define kSwitchBtnW_ac (int)(kScreenW/7.6)
+#define kSwitchBtnH_ac (int)(kScreenH/3)
+#define kSwitchBtnX_ac (int)(kScreenW/1.5)
+#define kSwitchBtnY_ac (int)(kScreenH/2.7)
+
+#define kBackBtnW_ac (int)(kScreenW/38.8)
+#define kBackBtnH_ac (int)(kScreenH/18)
+#define kBackBtnX_ac (int)(kScreenW/1.1)
+#define kBackBtnY_ac (int)(kScreenH/2.1)
+
+/********* SignInController **********/
+#define kSignInSuccessedLabelW_sic (int)(kScreenW/2.5)
+#define kSignInSuccessedLabelH_sic (int)(kScreenH/1.5)
+#define kSignInSuccessedLabelX_sic (int)(kScreenW/3.4)
+#define kSignInSuccessedLabelY_sic (int)(kScreenH/5.7)
+
+#define kSignInFailedLabelW_sic (int)(kScreenW/2.5)
+#define kSignInFailedLabelH_sic (int)(kScreenH/1.5)
+#define kSignInFailedLabelX_sic (int)(kScreenW/3.4)
+#define kSignInFailedLabelY_sic (int)(kScreenH/5.7)
+
+#define kTitleLabelW_sic (int)(kScreenW/2.4)
+#define kTitleLabelH_sic (int)(kScreenH/5.7)
+#define kTitleLabelX_sic (int)(kScreenW/3.4)
+#define kTitleLabelY_sic (int)(kScreenH/3.8)
+
+#define kTimeLabelW_sic (int)(kScreenW/2.4)
+#define kTimeLabelH_sic (int)(kScreenH/5.7)
+#define kTimeLabelX_sic (int)(kScreenW/3.4)
+#define kTimeLabelY_sic (int)(kScreenH/2.7)
+
+#define kContentLabelW_sic (int)(kScreenW/2.4)
+//#define kContentLabelW_sic (int)(kScreenW)
+#define kContentLabelH_sic (int)(kScreenH/5.7)
+#define kContentLabelX_sic (int)(kScreenW/3.4)
+//#define kContentLabelX_sic 0
+#define kContentLabelY_sic (int)(kScreenH/2)
+
+#define kTitleLabelFailedW_sic (int)(kScreenW)
+#define kTitleLabelFailedH_sic (int)(kScreenH/10)
+#define kTitleLabelFailedX_sic 0
+#define kTitleLabelFailedY_sic (int)(kScreenH/2.67)
+
+#define kContentLabelFailedW_sic (int)(kScreenW)
+#define kContentLabelFailedH_sic (int)(kScreenH/10)
+#define kContentLabelFailedX_sic 0
+#define kContentLabelFailedY_sic (int)(kScreenH/1.8)
+
+/********* WifiButton **********/
+//#define kWifiBtn_W 1160
+//#define kWifiBtn_H 80
+//#define kWifiBtn_X 50
+//#define kWifiBtn_Y 120
+#define kWifiBox_W 1260
+#define kWifiBox_H 600
+#define kWifiBox_X 10
+#define kWifiBox_Y 120
+
+#define kWifiBtn_W 1160
+#define kWifiBtn_H 80
+#define kWifiBtn_X kWifiBox_X+50
+#define kWifiBtn_Y kWifiBox_Y+120
+
+#define kWifiSSID_W 500
+#define kWifiSSID_H 45
+#define kWifiSSID_X 30
+#define kWifiSSID_Y 15
+
+#define kEncryptStatus_W 40
+#define kEncryptStatus_H 35
+#define kEncryptStatus_X 900
+#define kEncryptStatus_Y 25
+
+#define kSignalValue_W 40
+#define kSignalValue_H 35
+#define kSignalValue_X 1000
+#define kSignalValue_Y 25
+
+
+#endif // UI_CONFIG_H

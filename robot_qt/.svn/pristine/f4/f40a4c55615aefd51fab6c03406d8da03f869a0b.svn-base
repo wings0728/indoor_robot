@@ -1,0 +1,103 @@
+#ifndef T3TASK_HPP
+#define T3TASK_HPP
+/**a
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  T3Task.hpp
+  * 作者    Jincheng
+  * 版本    V1.0.0
+  * 日期    2018.04.19
+  * 说明    任务类
+  ******************************************************************************
+*/
+
+#include <QObject>
+#include "../model/T3TaskModel.hpp"
+#include "../controller/T3StandbyController.hpp"
+#include "../controller/T3StaffController.hpp"
+#include "../controller/T3GuestLoginController.hpp"
+#include "../database/T3DB.hpp"
+#include "../ros/qnode.hpp"
+
+namespace task
+{
+using namespace model;
+
+
+
+class T3Task : public QObject
+{
+  Q_OBJECT
+public:
+  enum eTaskErrorType
+  {
+    eGuide_Error
+  };
+
+  T3Task();
+  ~T3Task();
+  static T3Task * getInstance();
+
+  void runTask(T3TaskModel &model);
+  void stopTask(T3TaskModel &model);
+
+private:
+  interface::T3FaceScan *_faceScan;
+  interface::T3Hardware *_hardware;
+  interface::T3DB *_db;
+  interface::QNode *_qnode;
+//待机
+  T3StandbyController *_sbc;
+//本机界面
+  T3GuestLoginController *_glc;
+  T3StaffController *_stc;
+
+  bool _isInit;
+
+  void init();
+
+  void sign(T3SignTask &task);//签到
+  void wakeup(T3WakeupTask &task);//唤醒
+//  void speakVoice(T3LEDTask &task);//语音
+//  void flashLED(T3LEDTask &task);//LED
+  void HardwareSwitch(T3HardwareTask &task);//硬件开关
+  void sendExpress(T3ExpressTask &task);//寄快递
+  void returnCharge(T3ChargeTask &task);//回充
+  void guide(T3GuideTask &task);//引导
+  void modeChange(T3ModeChangeTask &task);//模式切换
+  void interview(T3InterviewTask &task);//面试
+  void showUI(T3UserInfo &userInfo);//界面显示
+  void standby();//待机
+  void origin(T3OriginTask &origin);//回原点
+  void hideStandby();//隐藏待机界面
+  //根据任务设置对应的ROS目标点
+  void setGuideGoal(T3GuideTask &task);
+
+private slots:
+  void taskFinishSlot();
+  void signSlot(T3UserInfo &userInfo);
+  void wakeupSlot(int angle);
+  void expressFaceSlot();
+  void expressGuideSlot(robot_qt::GuideState state);
+  void chargeSlot(robot_qt::GuideState state);
+  void normalGuideSlot(robot_qt::GuideState state);
+  void interviewSlot();
+  void showUISlot();
+  void standbySlot(T3UserInfo &userInfo);
+  void originSlot();
+//  void guidErrorSlot();//引导过程中产生错误时，会调用此槽
+
+signals:
+  void taskError(eTaskErrorType errorType);//任务出错
+  void taskFinish();//堵塞式任务完成信号
+  void signSuccess();//签到成功信号
+  void beWakeup();//被唤醒信号
+  void stanbyOver();//待机结束信号
+  void arriveOrigin();//到达原点
+
+};
+
+}
+
+
+#endif // T3TASKSCHEDULING_HPP

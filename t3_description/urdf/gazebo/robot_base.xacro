@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+ 	xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+    	xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+    	xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+	name="robot1_xacro">
+
+        <xacro:property name="radius_base_link" value="0.24" />
+        <xacro:property name="length_base_link" value="0.01" />
+        <xacro:property name="length_wheel" value="0.037" />
+        <xacro:property name="radius_wheel" value="0.0625" />
+	<xacro:property name="camera_link" value="0.05" /> 
+        <xacro:property name="radius_universalWheel" value="0.01575" />
+
+	<xacro:macro name="default_inertial" params="mass">
+               <inertial>
+                       <mass value="${mass}" />
+                       <inertia ixx="1.0" ixy="0.0" ixz="0.0"
+                                iyy="1.0" iyz="0.0"
+                                izz="1.0" />
+               </inertial>
+	</xacro:macro>
+
+	<link name="base_footprint">
+   		<visual>
+			<geometry>
+      				<box size="0.001 0.001 0.001"/>
+     			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+   		</visual>
+		<!-- <xacro:default_inertial mass="0.0001"/> -->
+ 	</link>
+        <xacro:include filename="$(find t3_description)/urdf/robot_base.gazebo" />
+ 
+	<gazebo reference="base_footprint">
+		<material>Gazebo/Green</material>
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+
+	<joint name="base_footprint_joint" type="fixed">
+		<origin xyz="0 0 0" />
+		<parent link="base_footprint" />
+		<child link="base_link" />
+	</joint>
+
+
+	<link name="base_link">
+   		<visual>
+			<geometry>
+                                <cylinder length="${length_base_link}" radius="${radius_base_link}"/>
+     			</geometry>
+                        <origin rpy="0 0 1.54" xyz="0 0 -0.031"/>
+			<material name="white">
+				<color rgba="1 1 1 1"/>
+			</material>
+   		</visual>
+		<collision>
+			<geometry>
+       				<box size="0.2 .3 0.1"/>
+			</geometry>
+		</collision>
+		<xacro:default_inertial mass="10"/>
+        </link>
+
+
+ 	<link name="wheel_1">
+   		<visual>
+     			<geometry>
+       				<cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+     			</geometry>
+			<!-- <origin rpy="0 1.5 0" xyz="0.1 0.1 0"/> -->
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+   			<material name="black">
+				<color rgba="0 0 0 1"/>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+       				<cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+			</geometry>
+		</collision>
+		<xacro:default_inertial mass="1"/>
+ 	</link>
+
+        <link name="wheel_2">
+                <visual>
+                        <geometry>
+                                <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+                        </geometry>
+                        <!-- <origin rpy="0 1.5 0" xyz="0.1 -0.1 0"/> -->
+
+                        <origin rpy="0 0 0" xyz="0 0 0"/>
+                        <material name="black"/>
+                </visual>
+                <collision>
+                        <geometry>
+                                <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+                        </geometry>
+                </collision>
+                <xacro:default_inertial mass="1"/>
+        </link>
+
+        <link name="universalWheel_1">
+                <visual>
+                        <geometry>
+                                <sphere radius="${radius_universalWheel}" />
+                        </geometry>
+                        <!-- <origin rpy="0 1.5 0" xyz="0.1 -0.1 0"/> -->
+
+                        <origin rpy="0 0 0" xyz="0 0 0"/>
+                        <material name="black"/>
+                </visual>
+                <collision>
+                        <geometry>
+                                <sphere radius="${radius_universalWheel}" />
+                        </geometry>
+                </collision>
+                <xacro:default_inertial mass="1"/>
+        </link>
+
+        <link name="universalWheel_2">
+                <visual>
+                        <geometry>
+                                <sphere radius="${radius_universalWheel}" />
+                        </geometry>
+                        <!-- <origin rpy="0 1.5 0" xyz="0.1 -0.1 0"/> -->
+
+                        <origin rpy="0 0 0" xyz="0 0 0"/>
+                        <material name="black"/>
+                </visual>
+                <collision>
+                        <geometry>
+                                <sphere radius="${radius_universalWheel}" />
+                        </geometry>
+                </collision>
+                <xacro:default_inertial mass="1"/>
+        </link>
+
+
+
+ <joint name="base_to_wheel1" type="continuous">
+   <parent link="base_link"/>
+   <child link="wheel_1"/>
+   <origin rpy="-1.5707 0 0" xyz="0 0.208 0"/>
+   <axis xyz="0 0 1" />
+ </joint>base_to_wheel1
+
+ <joint name="base_to_wheel2" type="continuous">
+   <parent link="base_link"/>
+   <axis xyz="0 0 1" />
+   <child link="wheel_2"/>
+   <origin rpy="-1.5707 0 0" xyz="0 -0.208 0"/>
+ </joint>
+
+<joint name="base_to_universalWheel1" type="continuous">
+  <parent link="base_link"/>
+  <axis xyz="0 0 1" />
+  <child link="universalWheel_1"/>
+  <origin rpy="0 0 0" xyz="-0.22 0 -0.04675"/>
+</joint>
+
+<joint name="base_to_universalWheel2" type="continuous">
+  <parent link="base_link"/>
+  <axis xyz="0 0 1" />
+  <child link="universalWheel_2"/>
+  <origin rpy="0 0 0" xyz="0.22 0 -0.04675"/>
+</joint>
+<!--
+  <joint name="camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.125 0 0.125" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+  </joint>
+
+
+  <link name="camera_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	<box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	<box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red">
+	<color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+-->
+
+
+
+  <!-- Hokuyo joint -->
+  <joint name="hokuyo_joint" type="fixed">
+    <origin xyz="0 0 0.325" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" />
+    <child link="hokuyo_link"/>
+  </joint>
+
+  <!-- Hokuyo Laser -->
+  <link name="hokuyo_link">
+<!--
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	<box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+-->
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://t3_description/meshes/hokuyo.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+<!-- SICK TIM561 (25m Range)-->
+<gazebo reference="hokuyo_link">
+    <sensor type="ray" name="base_laser">
+        <always_on>true</always_on>
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>15</update_rate>
+        <ray>
+            <scan>
+                <horizontal>
+                <samples>1000</samples>
+                <resolution>1</resolution>
+                <min_angle>-3.13</min_angle>
+                <max_angle>3.13</max_angle>
+                </horizontal>
+            </scan>
+
+            <range>
+                <min>0.05</min>
+                <max>25.0</max>
+                <resolution>0.01</resolution>
+            </range>
+        </ray>
+
+        <plugin name="gazebo_ros_base_laser_controller" filename="libgazebo_ros_laser.so">
+            <gaussianNoise>0.005</gaussianNoise>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>15</updateRate>
+            <topicName>/base_scan</topicName>
+            <frameName>hokuyo_link</frameName>
+            <hokuyoMinIntensity>101</hokuyoMinIntensity>
+        </plugin>
+    </sensor>
+</gazebo>
+
+  <!-- Drive controller -->
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <alwaysOn>true</alwaysOn>
+      <legacyMode>true</legacyMode>
+      <updateRate>100</updateRate>
+      <leftJoint>base_to_wheel2</leftJoint>
+      <rightJoint>base_to_wheel1</rightJoint>
+      <wheelSeparation>0.4170</wheelSeparation>
+      <wheelDiameter>0.125</wheelDiameter>
+      <torque>20</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+    </plugin>
+  </gazebo>
+
+
+</robot>

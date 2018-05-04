@@ -1,0 +1,42 @@
+#ifndef T3EXPRESSTASKMODEL_HPP
+#define T3EXPRESSTASKMODEL_HPP
+
+#include "T3BaseModel.hpp"
+#include "T3NavigationTaskModel.hpp"
+#include "T3UserInfo.hpp"
+
+/**
+  ******************************************************************************
+  * @file
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/04/17
+  * @brief      快递任务列表
+  ******************************************************************************
+*/
+
+namespace model
+{
+
+enum eExpTaskState
+{
+
+};
+class T3ExpressTaskModel : public T3BaseModel
+{
+public:
+  T3ExpressTaskModel();
+
+private:
+  int           _id;
+  int           _taskId;
+  T3NavigationTaskModel *_naviTask;
+  T3UserInfo    *_sender;
+  T3UserInfo    *_recipient;
+  QString       *_expressGoods;
+  int           *_expressBoxNum;
+  eExpTaskState _state;
+
+};
+}
+#endif // T3EXPRESSTASKMODEL_HPP

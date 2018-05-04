@@ -1,0 +1,196 @@
+#include "T3FaceScan.h"
+#include "ros/ros.h"
+
+namespace interface
+{
+T3FaceScan::T3FaceScan()
+{
+  _oldFaceRecognInfo = NULL;
+  _faceScanBeReady = false;
+  _isCanRun = false;
+  _faceChange = true;
+  _frameIndex = 0;
+  _faceRecognInfo = new model::T3FaceRecognInfo();
+  _noFaceTimer = new QTimer();
+  _noFaceTimer->start(kNoFaceTime * 1000);
+  connect(_noFaceTimer,
+          &QTimer::timeout,
+          this,
+          &T3FaceScan::noFaceSlot);
+}
+T3FaceScan* T3FaceScan::_faceScan = new T3FaceScan();
+
+T3FaceScan* T3FaceScan::getInstance()
+{
+  _faceScan->startFaceScan();
+  return _faceScan;
+}
+
+bool T3FaceScan::startFaceScan()
+{
+
+  if(_faceScanBeReady)
+  {
+    return true;
+  }
+  _faceChange = true;
+  _isCanRun = true;
+  _faceScanBeReady = true;
+  initInstance();
+  start();
+  return true;
+}
+
+void T3FaceScan::initInstance()
+{
+  _face = T3Face::getInstance();
+  connect(_face,
+          &T3Face::faceRecognInfo,
+          this,
+          &T3FaceScan::newFaceSlots);
+  _camera = T3Camera::getInstance();
+  _videoDecoder = tool::T3VideoDecoder::getInstance();
+
+}
+
+void T3FaceScan::run()
+{
+    ros::Rate loop_rate(30);
+    while(true)
+    {
+      //1.获取摄像头数据(数据格式YUYV)
+      _camera->getFrame(_YUYVFrameData);
+      if(0 == _YUYVFrameData.size())
+      {
+        T3LOG << "no camera data";
+        break;
+      }
+
+      // 将前一帧的数据保存下来,用来对比
+      if(NULL != _oldFaceRecognInfo)
+      {
+        delete _oldFaceRecognInfo;
+      }
+
+      _oldFaceRecognInfo = _faceRecognInfo;
+      _faceRecognInfo = new model::T3FaceRecognInfo();
+
+      //探测当前一帧视频数据,得到人脸数量及位置信息
+      T3FaceIdenIdenCode code_ = _face->detectFacePosition(_YUYVFrameData,
+                                                           *_faceRecognInfo);
+      if(DetechFace == code_)
+      {
+        _noFaceTimer->stop();
+        _noFaceTimer->start(kNoFaceTime * 1000);
+        checkFaceBeChange();
+        if(_faceChange)
+        {
+
+          T3LOG << _faceChange;
+          _face->facePairMatch();
+        }
+
+      }
+      QMutexLocker locker_(&_lock);
+      if(!_isCanRun)
+      {
+        return ;
+      }
+      loop_rate.sleep();
+    }
+}
+
+bool T3FaceScan::checkFaceBeChange()
+{
+
+    if(_faceRecognInfo->getFaceNum() != _oldFaceRecognInfo->getFaceNum())
+    {
+      _faceChange = true;
+      return true;
+    }
+    QList<model::T3FacePositionInfo> facePositionList_ = _faceRecognInfo->getFacePositionList();
+    QList<model::T3FacePositionInfo> oldFacePositionList_ = _oldFaceRecognInfo->getFacePositionList();
+
+    for(int i = 0; i < _faceRecognInfo->getFaceNum();i++)
+    {
+      model::T3FacePositionInfo facePositionInfo_ = facePositionList_.at(i);
+      int maxOverlapArea_ = 0;
+      int maxOverlapIndex_ = 0;
+      int halfArea_ = ((facePositionInfo_.getBottom() - facePositionInfo_.getTop()) * (facePositionInfo_.getRight() - facePositionInfo_.getLeft())) / 4;
+      for(int j = 0;j < _oldFaceRecognInfo->getFaceNum();j++)
+      {
+        model::T3FacePositionInfo oldFacePositionInfo_ = oldFacePositionList_.at(j);
+        int area_ = computeOverlapArea(facePositionInfo_.getLeft(),
+                                       facePositionInfo_.getBottom(),
+                                       facePositionInfo_.getRight(),
+                                       facePositionInfo_.getTop(),
+                                       oldFacePositionInfo_.getLeft(),
+                                       oldFacePositionInfo_.getBottom(),
+                                       oldFacePositionInfo_.getRight(),
+                                       oldFacePositionInfo_.getTop());
+        if(area_ > maxOverlapArea_)
+        {
+          maxOverlapArea_ = area_;
+          maxOverlapIndex_ = j;
+        }
+      }
+      if(maxOverlapArea_ < halfArea_)
+      {
+        _faceChange = true;
+        return true;
+      }
+
+    }
+    return false;
+
+}
+
+int T3FaceScan::computeOverlapArea(int leftA,
+                                   int bottomA,
+                                   int rightA,
+                                   int topA,
+                                   int leftB,
+                                   int bottomB,
+                                   int rightB,
+                                   int topB)
+{
+    if ((leftB >= rightA) || (topA >= bottomB) || (topB >= bottomA) || (leftA >= rightB)) return 0;
+    return ((qMin(rightB, rightA) - qMax(leftA, leftB)) * (qMin(bottomA, bottomB) - qMax(topA, topB)));
+}
+
+void T3FaceScan::stopFaceScan()
+{
+
+
+    QMutexLocker locker_(&_lock);
+    _isCanRun = false;
+}
+
+void T3FaceScan::newFaceSlots(model::T3UserInfo &userInfo)
+{
+  _faceChange = false;
+  T3LOG << "face change false";
+  //emit getNewFace(id);
+}
+
+int T3FaceScan::startMatchPeople(model::T3UserInfo user)
+{
+
+}
+
+int T3FaceScan::stopMatchPeople()
+{
+
+}
+
+void T3FaceScan::noFaceSlot()
+{
+  _noFaceTimer->stop();
+  emit noFace();
+}
+T3FaceScan::~T3FaceScan()
+{
+
+}
+}
+

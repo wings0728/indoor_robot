@@ -1,0 +1,58 @@
+#include "T3FacePositionInfo.hpp"
+
+namespace model
+{
+
+T3FacePositionInfo::T3FacePositionInfo()
+{
+  _left = 0;
+  _right = 0;
+  _top = 0;
+  _bottom = 0;
+}
+
+T3FacePositionInfo::~T3FacePositionInfo()
+{
+
+}
+
+void T3FacePositionInfo::setbottom(int bottom)
+{
+  _bottom = bottom;
+}
+
+void T3FacePositionInfo::setLeft(int left)
+{
+  _left  = left;
+}
+
+void T3FacePositionInfo::setRight(int right)
+{
+  _right = right;
+}
+
+void T3FacePositionInfo::setTop(int top)
+{
+  _top = top;
+}
+
+int T3FacePositionInfo::getBottom()
+{
+  return _bottom;
+}
+
+int T3FacePositionInfo::getLeft()
+{
+  return _left;
+}
+
+int T3FacePositionInfo::getRight()
+{
+  return _right;
+}
+
+int T3FacePositionInfo::getTop()
+{
+  return _top;
+}
+}

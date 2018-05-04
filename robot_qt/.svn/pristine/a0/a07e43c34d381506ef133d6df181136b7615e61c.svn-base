@@ -1,0 +1,12 @@
+#include "T3GuestModel.hpp"
+
+namespace model {
+T3GuestModel::T3GuestModel()
+
+{
+  _userType = guest;
+}
+
+T3GuestModel::~T3GuestModel(){}
+
+}

@@ -1,0 +1,6 @@
+positions: position0 position1 position2 position3 position4
+position0: {name: 办公室, x: 1.2, y: 1.3, z: 1.3}
+position1: {name: 会议室, x: 2.2, y: 2.2, z: 2.2}
+position2: {name: 展厅, x: 3.3, y: 3.3, z: 3.3}
+position3: {name: 展厅2, x: 3.3, y: 3.3, z: 3.3}
+position4: {name: 展厅3, x: 3.3, y: 3.3, z: 3.3}

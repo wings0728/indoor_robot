@@ -1,0 +1,40 @@
+#ifndef T3NAVIGATIONTASKMODEL_HPP
+#define T3NAVIGATIONTASKMODEL_HPP
+
+#include <QByteArray>
+#include "T3BaseModel.hpp"
+#include "T3Pose.hpp"
+
+/**
+  ******************************************************************************
+  * @file       T3NavigationTaskmodel.hpp
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/04/17
+  * @brief      导航任务列表
+  ******************************************************************************
+*/
+namespace model
+{
+
+enum eNaviState
+{
+
+};
+
+class T3NavigationTaskModel
+{
+public:
+  T3NavigationTaskModel();
+
+private:
+  int           _id;
+  int           _taskId;
+  QByteArray    _route;
+  T3Pose        *_destination;
+  eNaviState    _state;
+
+
+};
+}
+#endif // T3NAVIGATIONTASKMODEL_HPP

@@ -1,0 +1,332 @@
+<?xml version="1.0" ?>
+<robot name="t3robot_v1" xmlns:xacro="http://ros.org/wiki/xacro">
+
+	<!-- main body -->
+	<xacro:property name="robot_height_without_sonar_layer" value="1"/>
+	<xacro:property name="robot_width" value="0.48"/>
+	<xacro:property name="robot_length" value="0.93"/>
+	<xacro:property name="robot_base_offgnd" value="0.095"/>
+	<xacro:property name="head_radius" value="0.1"/>
+	<!-- sonar -->
+	<xacro:property name="sonar_layer_height" value="0.305"/>
+	<xacro:property name="sonar_layer_length" value="0.8"/>
+
+	<xacro:property name="upper_fsonar_frmgnd" value="0.315"/>
+	<xacro:property name="upper_fsonar_frmmainmotor_x" value="${lower_fsonar1_frmmainmotor_x + 0.025}"/>
+	<xacro:property name="upper_fsonar_y" value="${lower_fsonar2_y + 0.065}"/>
+	<xacro:property name="upper_fsonar_theta" value="${2*lower_fsonar2_theta}"/>
+	
+	<xacro:property name="lower_fsonar_frmgnd" value="0.255"/>
+	<xacro:property name="lower_fsonar1_frmmainmotor_x" value="0.42"/>
+	<xacro:property name="lower_fsonar1_y" value="${lower_fsonar2_y + 0.125}"/>
+	<xacro:property name="lower_fsonar1_theta" value="${3*lower_fsonar2_theta}"/>
+	
+	<xacro:property name="lower_fsonar2_frmmainmotor_x" value="${lower_fsonar1_frmmainmotor_x + 0.045}"/>
+	<xacro:property name="lower_fsonar2_y" value="0.07"/>
+	<xacro:property name="lower_fsonar2_theta" value="0.17453"/>
+	
+	<xacro:property name="bsonar_frmgnd" value="0.36"/>
+	<xacro:property name="bsonar1_frmmainmotor_x" value="-0.35"/>
+	<xacro:property name="bsonar1_y" value="${bsonar2_y + 0.1}"/>
+	<xacro:property name="bsonar1_theta" value="2.4435"/>
+	
+	<xacro:property name="bsonar2_frmmainmotor_x" value="${bsonar1_frmmainmotor_x-0.03}"/>
+	<xacro:property name="bsonar2_y" value="0.075"/>
+	<xacro:property name="bsonar2_theta" value="3.0543"/>
+	
+	<xacro:property name="main_fsonar_frmgnd" value="0.58"/>
+	<xacro:property name="main_fsonar_y" value="0.1275"/>
+	<!-- wheels -->
+	<xacro:property name="wheel_thickness" value="0.15"/>
+	<xacro:property name="dist_btwn_gndwheels" value="0.24"/>
+	<xacro:property name="dist_btwn_sidewheels" value="0.78"/>
+	<xacro:property name="total_wheel_height" value="0.225"/>
+	<xacro:property name="mainmotor_radius" value="0.06"/>
+	<xacro:property name="gndwheel_radius" value="0.04"/>
+	<xacro:property name="sidewheel_radius" value="0.03"/>
+	<xacro:property name="wheel_base_offset" value="0.065"/>
+	<!-- lidar -->
+	<xacro:property name="lidar_radius" value="0.05"/>
+	<xacro:property name="lidar_height" value="0.05"/>
+	<xacro:property name="lidar_from_gnd" value="0.12"/>
+	<xacro:property name="lidar_from_mainmotor_x" value="0.55"/>
+	<!-- gps -->
+	<xacro:property name="gps_from_gnd" value="1.5"/>
+	<xacro:property name="gps_from_mainmotor_x" value="-0.3"/>
+	<!-- others -->
+	<xacro:property name="from_sonarlayer_origin" value="${(robot_length - sonar_layer_length)/2 - wheel_base_offset}"/>
+	<xacro:property name="ground_to_sonar_origin" value="${(sonar_layer_height/2 + robot_base_offgnd)}"/>
+
+	<!--create material colors-->
+	<material name="blue">
+		<color rgba="0 0 0.8 1"/>
+	</material>
+   
+	<material name="white">
+		<color rgba="1 1 1 1"/>
+	</material>
+
+	<material name="black">
+		<color rgba="0 0 0 1"/>
+	</material>
+
+	<material name="grey">
+		<color rgba="0.3 0.3 0.3 1"/>
+	</material>
+
+	<!--macro to create wheels-->
+	<xacro:macro name="wheel" params="prefix reflect">
+		<xacro:macro name="create_wheel" params="prefix2 radius">
+			<link name="${prefix2}_wheel">
+				<visual>
+					<geometry>
+						<cylinder length="${wheel_thickness}" radius="${radius}"/>
+					</geometry>
+					<origin rpy="1.5708 0 0" xyz="0 0 0"/>
+					<material name="black"/>
+				</visual>
+			</link>
+
+			<link name="${prefix2}_wheel_base">
+				<visual>
+					<geometry>
+						<cylinder length="0.01" radius="${radius}"/>
+					</geometry>
+					<material name="black"/>
+					<origin rpy="1.5708 0 0" xyz="0 0 0"/>
+				</visual>
+			</link>
+
+			<joint name="plate2${prefix2}_wheel" type="continuous">
+				<parent link="${prefix2}_wheel_base"/>
+				<child link="${prefix2}_wheel"/>
+				<axis xyz="0 1 0"/>
+				<origin xyz="0 0 0"/>
+			</joint>
+		</xacro:macro>
+
+		<xacro:macro name="join_wheel_bases" params="frm to x z">
+			<joint name="${frm}2${to}" type="fixed">
+				<parent link="${frm}"/>
+				<child link="${to}"/>
+				<origin xyz="${x} 0 ${z}"/>
+			</joint>
+		</xacro:macro>
+
+		<xacro:create_wheel prefix2="${prefix}_main" radius="${mainmotor_radius}"/>
+		<xacro:create_wheel prefix2="${prefix}_front" radius="${sidewheel_radius}"/>
+		<xacro:create_wheel prefix2="${prefix}_back" radius="${sidewheel_radius}"/>
+		<xacro:create_wheel prefix2="${prefix}_gnd1" radius="${gndwheel_radius}"/>
+		<xacro:create_wheel prefix2="${prefix}_gnd2" radius="${gndwheel_radius}"/>
+		<xacro:create_wheel prefix2="${prefix}_gnd3" radius="${gndwheel_radius}"/>
+
+		<xacro:join_wheel_bases frm="${prefix}_main_wheel_base" to="${prefix}_front_wheel_base" x="${dist_btwn_sidewheels/2}" z="${-total_wheel_height/2}"/>
+		<xacro:join_wheel_bases frm="${prefix}_main_wheel_base" to="${prefix}_back_wheel_base" x="${-dist_btwn_sidewheels/2}" z="${-total_wheel_height/2}"/>
+		<xacro:join_wheel_bases frm="${prefix}_main_wheel_base" to="${prefix}_gnd1_wheel_base" x="${dist_btwn_gndwheels}" z="${-total_wheel_height}"/>
+		<xacro:join_wheel_bases frm="${prefix}_main_wheel_base" to="${prefix}_gnd2_wheel_base" x="0" z="${-total_wheel_height}"/>
+		<xacro:join_wheel_bases frm="${prefix}_main_wheel_base" to="${prefix}_gnd3_wheel_base" x="${-dist_btwn_gndwheels}" z="${-total_wheel_height}"/>
+
+		<joint name="${prefix}_base2wheel" type="fixed">
+			<parent link="base_link"/>
+			<child link="${prefix}_main_wheel_base"/>
+			<origin xyz="0 ${reflect * (robot_width + wheel_thickness)/2} ${total_wheel_height + gndwheel_radius/2}"/>
+		</joint>
+
+	</xacro:macro>
+
+
+	<!--macro to create sonar layer. frm: child link, to: parent link, layer_length: sonar layer length, layer_height: sonar layer height, x: x pos of sonar layer relative to origin of parent link, z: z pos of sonar layer relative to origin of parent link-->
+	<xacro:macro name="create_sonar_layer" params="frm to layer_length layer_height x z">
+		<link name="${frm}">
+			<visual>
+				<geometry>
+					<box size="${layer_length} ${robot_width} ${layer_height}"/>
+				</geometry>
+				<material name="white"/>
+				<origin xyz="0 0 0"/>
+			</visual>
+		</link>
+
+		<joint name="${frm}2${to}" type="fixed">
+			<parent link="${to}"/>
+			<child link="${frm}"/>
+			<origin xyz="${x} 0 ${z}"/>
+		</joint>
+	</xacro:macro>
+
+
+	<!--macro to create sonar. prefix: which sonar, frm: parent link, yaw x y z: pose of sonar relative to the origin of parent link-->
+	<xacro:macro name="sonar" params="prefix frm yaw x y z">
+		<xacro:macro name="create_sonar" params="prefix2">
+			<link name="${prefix2}_sonar">
+				<visual>
+					<geometry>
+						<cylinder length="0.01" radius="0.0125"/>
+					</geometry>
+					<material name="grey"/>
+					<origin rpy="0 1.5708 0"/>
+				</visual>
+			</link>
+		</xacro:macro>
+
+		<xacro:macro name="join_sonar2layer" params="prefix3 frm2 to yaw2 x2 y2 z2">
+			<joint name="${prefix3}_joint" type="fixed">
+				<parent link="${frm2}"/>
+				<child link="${to}"/>
+				<origin rpy="0 0 ${yaw2}" xyz="${x2} ${y2} ${z2}"/>
+			</joint>
+		</xacro:macro>
+
+		<xacro:create_sonar prefix2="${prefix}_left"/>
+		<xacro:create_sonar prefix2="${prefix}_right"/>
+		<xacro:join_sonar2layer prefix3="${prefix}_left_sonar" frm2="${frm}" to="${prefix}_left_sonar" yaw2="${yaw}" x2="${x}" y2="${y}" z2="${z}"/>
+		<xacro:join_sonar2layer prefix3="${prefix}_right_sonar" frm2="${frm}" to="${prefix}_right_sonar" yaw2="${-yaw}" x2="${x}" y2="${-y}" z2="${z}"/>
+
+	</xacro:macro>
+
+	<!-- macro to create lidar. h: height of lidar platform, l: length of lidar platform-->
+	<xacro:macro name="create_lidar" params="h l">
+		<link name="lidar">
+			<visual>
+				<geometry>
+					<cylinder length="${lidar_height}" radius="${lidar_radius}"/>
+				</geometry>
+				<origin rpy="0 0 0"/>
+				<material name="black"/>
+			</visual>
+		</link>
+
+		<link name="lidar_holder">
+			<visual>
+				<geometry>
+					<box size="${l} ${lidar_radius*2} ${h}"/>
+				</geometry>
+				<origin xyz="${l/2} 0 0"/>
+				<material name="white"/>
+			</visual>
+		</link>
+
+		<joint name="lidar2plate" type="continuous">
+			<parent link="lidar_holder"/>
+			<child link="lidar"/>
+			<axis xyz="0 0 1"/>
+			<origin rpy="3.14 0 0" xyz="${l - lidar_radius} 0 ${(lidar_height+h)/2}"/>
+		</joint>
+
+		<joint name="lidarholder2sonarlayer" type="fixed">
+			<parent link="sonar_layer"/>
+			<child link="lidar_holder"/>
+			<origin xyz="${from_sonarlayer_origin} 0 ${-ground_to_sonar_origin - h/2 + lidar_from_gnd - lidar_height/2}"/>
+		</joint>
+
+	</xacro:macro>
+
+
+	<!--create base-->
+	<link name="base_footprint"/>
+	<joint name="footprint_baselink" type="fixed">
+		<parent link="base_footprint"/>
+		<child link="base_link"/>
+	</joint>
+	<link name="base_link">
+		<visual>
+			<geometry>
+				<box size="${robot_length} ${robot_width} ${robot_height_without_sonar_layer}"/>
+			</geometry>
+			<material name="white"/>
+			<origin rpy = "0 0 0" xyz="${wheel_base_offset} 0 ${robot_height_without_sonar_layer/2 + robot_base_offgnd + sonar_layer_height}"/>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="${dist_btwn_sidewheels + 2*sidewheel_radius + 0.2} ${robot_width + 2*wheel_thickness + 0.1} ${robot_base_offgnd + sonar_layer_height + robot_height_without_sonar_layer + head_radius * 2}"/>
+			</geometry>
+			<origin rpy = "0 0 0" xyz="${wheel_base_offset} 0 ${robot_height_without_sonar_layer/2 + robot_base_offgnd + sonar_layer_height - 0.12}"/>
+		</collision>
+	</link>
+
+	<!--create head-->
+	<link name="head">
+		<visual>
+			<geometry>
+				<sphere radius="${head_radius}"/>
+				<origin xyz="0 0 0"/>
+			</geometry>
+			<material name="black"/>
+		</visual>
+	</link>
+
+	<joint name="head2base" type="fixed">
+		<parent link="base_link"/>
+		<child link="head"/>
+		<origin xyz="${-(robot_length/2 - head_radius) + wheel_base_offset} 0 ${robot_height_without_sonar_layer + robot_base_offgnd + sonar_layer_height +  head_radius}"/>
+	</joint>
+
+	<!-- create wheels -->
+
+	<xacro:wheel prefix="left" reflect="1"/>
+	<xacro:wheel prefix="right" reflect="-1"/>
+
+	<!-- create sonar -->
+
+	<xacro:create_sonar_layer frm="sonar_layer" to="base_link" layer_length="${sonar_layer_length}" layer_height="${sonar_layer_height}" x="${-(robot_length-sonar_layer_length)/2 + wheel_base_offset}" z="${ground_to_sonar_origin}"/>
+
+	<xacro:sonar prefix="upper_front1" frm="sonar_layer" yaw="${upper_fsonar_theta}" x="${upper_fsonar_frmmainmotor_x}" y="${upper_fsonar_y}" z="${upper_fsonar_frmgnd - ground_to_sonar_origin}"/>
+	<xacro:sonar prefix="lower_front1" frm="sonar_layer" yaw="${lower_fsonar1_theta}" x="${lower_fsonar1_frmmainmotor_x}" y="${lower_fsonar1_y}" z="${lower_fsonar_frmgnd - ground_to_sonar_origin}"/>
+	<xacro:sonar prefix="lower_front2" frm="sonar_layer" yaw="${lower_fsonar2_theta}" x="${lower_fsonar2_frmmainmotor_x}" y="${lower_fsonar2_y}" z="${lower_fsonar_frmgnd - ground_to_sonar_origin}"/>
+	<xacro:sonar prefix="back1" frm="sonar_layer" yaw="${bsonar1_theta}" x="${bsonar1_frmmainmotor_x}" y="${bsonar1_y}" z="${bsonar_frmgnd - ground_to_sonar_origin}"/>
+	<xacro:sonar prefix="back2" frm="sonar_layer" yaw="${bsonar2_theta}" x="${bsonar2_frmmainmotor_x}" y="${bsonar2_y}" z="${bsonar_frmgnd - ground_to_sonar_origin}"/>
+	<xacro:sonar prefix="main" frm="base_link" yaw="0" x="${robot_length/2 + wheel_base_offset}" y="${main_fsonar_y}" z="${main_fsonar_frmgnd}"/>
+
+	<!-- create lidar -->
+
+	<xacro:create_lidar h="0.005" l="${lidar_from_mainmotor_x}"/>
+
+	<!-- create gps -->
+	<link name="gps">
+		<visual>
+			<geometry>
+				<box size="0.02 0.02 0.01"/>
+			</geometry>
+			<material name="black"/>
+		</visual>
+	</link>
+
+	<joint name="gps2basefootprint" type="fixed">
+		<parent link="base_footprint"/>
+		<child link="gps"/>
+		<origin xyz="${gps_from_mainmotor_x} 0 ${gps_from_gnd}"/>
+	</joint>
+
+		<!-- create imu0 -->
+	<link name="imu_link">
+		<visual>
+			<geometry>
+				<box size="0.01 0.01 0.01"/>
+			</geometry>
+			<material name="black"/>
+		</visual>
+	</link>
+
+	<joint name="imu0_2basefootprint" type="fixed">
+		<parent link="base_footprint"/>
+		<child link="imu_link"/>
+		<origin xyz="0 0 2"/>
+	</joint>
+
+	<!-- create imu1 -->
+	<link name="imu1_link">
+		<visual>
+			<geometry>
+				<box size="0.01 0.01 0.01"/>
+			</geometry>
+			<material name="black"/>
+		</visual>
+	</link>
+
+	<joint name="imu1_2basefootprint" type="fixed">
+		<parent link="base_footprint"/>
+		<child link="imu1_link"/>
+		<origin xyz="0 0 1"/>
+	</joint>
+
+</robot>

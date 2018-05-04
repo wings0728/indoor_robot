@@ -1,0 +1,121 @@
+#ifndef T3ROBOTSTATEMODEL_HPP
+#define T3ROBOTSTATEMODEL_HPP
+#include "T3BaseModel.hpp"
+#include "T3Pose.hpp"
+/**
+  ******************************************************************************
+  * @file       T3RobotStateModel.hpp
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/04/17
+  * @brief      机器人状态模型
+  ******************************************************************************
+*/
+
+namespace model {
+
+
+class T3RobotStateModel : T3BaseModel
+{
+//  Q_OBJECT
+public:
+  T3RobotStateModel();
+  ~T3RobotStateModel();
+
+  void setId(int Id);
+  void setBatteryLife(int BatteryLife);
+  void setPose(T3Pose *Pose);
+  void setIP(QString IP);
+  void setVelocity(float Velocity);
+  void setSmokeTransducer1(bool SmokeTransducer1);
+  void setSmokeTransducer2(bool SmokeTransducer2);
+  void setSmokeTransducer3(bool SmokeTransducer3);
+  void setSteeringPlantformat1(bool SteeringPlantformat1);
+  void setSteeringPlantformat2(bool SteeringPlantformat2);
+  void setExpressDoorState(bool ExpressDoorState);
+  void setExpressDoorLocked(bool ExpressDoorLocked);
+  void setElectronicLock1(bool EleCtornicLock1);
+  void setElectronicLock2(bool EleCtornicLock2);
+  void setSweeperLocked1(bool SweeperLocked1);
+  void setSweeperLocked2(bool SweeperLocked2);
+  void setSweeperTime(int SweeperTime);
+  void setSweeperState(bool SweeperState);
+  void setDustBoxBeFull(bool DustBoxBeFull);
+  void setAerialDetectLocked(bool AerialDetectLocked);
+  void setAerialDetectLevel(int AerialDetectLevel);
+  void setHumidifierState(bool HumidifierState);
+  void setLiquidLevelDetect1(bool LiquidLevelDetect1);
+  void setLiquidLevelDetect2(bool LiquidLevelDetect2);
+  void setAirCleanerState(bool AirCleanerState);
+  void setProjectorState(bool ProjectorState);
+  void setPrinterState(bool PrinterState);
+  void setBatteryChargeState(int BatteryChargeState);
+
+
+  int getId();
+  int getBatteryLife();
+  T3Pose* getPose();
+  QString getIP();
+  float getVelocity();
+  bool getSmokeTransducer1();
+  bool getSmokeTransducer2();
+  bool getSmokeTransducer3();
+  bool getSteeringPlantformat1();
+  bool getSteeringPlantformat2();
+  bool getExpressDoorState();
+  bool getExpressDoorLocked();
+  bool getElectronicLock1();
+  bool getElectronicLock2();
+  bool getSweeperLocked1();
+  bool getSweeperLocked2();
+  int getSweeperTime();
+  bool getSweeperState();
+  bool getDustBoxBeFull();
+  bool getAerialDetectLocked();
+  int getAerialDetectLevel();
+  bool getHumidifierState();
+  bool getLiquidLevelDetect1();
+  bool getLiquidLevelDetect2();
+  bool getAirCleanerState();
+  bool getProjectorState();
+  bool getPrinterState();
+  int getBatteryChargeState();
+
+
+  
+private:
+  int       _Id;
+  int       _BatteryLife;
+  T3Pose    *_Pose;
+  QString   _IP;
+  float     _Velocity;
+  bool      _SmokeTransducer1;
+  bool      _SmokeTransducer2;
+  bool      _SmokeTransducer3;
+  bool      _SteeringPlatformat1;
+  bool      _SteeringPlatformat2;
+  bool      _ExpressDoorState;
+  bool      _ExpressDoorLocked;
+  bool      _ElectronicLock1;
+  bool      _ElectronicLock2;
+  bool      _SweeperLocked1;
+  bool      _SweeperLocked2;
+  int       _SweeperTime;
+  bool      _SweeperState;
+  bool      _DustBoxBeFull;
+  bool      _AerialDetectLocked;
+  int       _AerialDetectLevel;
+  bool      _HumidifierState;
+  bool      _LiquidLevelDetect1;
+  bool      _LiquidLevelDetect2;
+  bool      _AirCleanerState;
+  bool      _ProjectorState;
+  bool      _PrinterState;
+  int       _BatteryChargeState;
+
+
+  
+};
+}
+
+#endif // T3ROBOTSTATEMODEL_HPP

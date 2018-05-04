@@ -1,0 +1,13 @@
+<launch>
+  <!-- <include file="$(find robot_localization)/launch/ekf_template_navigation_gps.launch" /> -->
+  <!-- <include file="$(find t3_goal)/launch/t3_goals.launch" /> -->
+  
+  <node pkg="robot_qt" type="rosgui" name="rosgui" output="screen" required="true">
+    <rosparam file="$(find robot_qt)/param/position.yaml" command="load" />
+    <param name="robotPoseTopicName" type="string" value="/odometry/filtered_map" />
+    <param name="globalPlanTopicName" type="string" value="/move_base/NavfnROS/plan" />
+    <param name="originX" value="-4.25" />
+    <param name="originY" value="-13.75" />
+    <param name="originZ" value="0.0" />
+  </node>
+</launch>

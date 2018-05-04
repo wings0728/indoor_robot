@@ -1,0 +1,12 @@
+#include "T3NavigationTaskModel.hpp"
+
+
+namespace model
+{
+
+
+T3NavigationTaskModel::T3NavigationTaskModel()
+{
+
+}
+}

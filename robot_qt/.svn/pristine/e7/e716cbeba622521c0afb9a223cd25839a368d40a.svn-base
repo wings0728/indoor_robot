@@ -1,0 +1,67 @@
+#include "T3ExpressTaskDB.hpp"
+
+
+namespace interface
+{
+T3ExpressTaskDB::T3ExpressTaskDB()
+{
+    _taskDB = T3TaskDatabase::getInstance();
+}
+int T3ExpressTaskDB::addNewExpressTask(model::T3ExpressTask &expressTask)
+{
+  QSqlQuery query_;
+  int taskId_ = _taskDB->addNewTask(expressTask);
+
+  query_.prepare("insert into T3ExpressTask values(NULL,?,?,?,?,?,?)");
+
+
+  query_.bindValue(0,taskId_);
+  query_.bindValue(1,-1);
+  query_.bindValue(2,expressTask.getReceiver().getID());
+  query_.bindValue(3,"");
+  query_.bindValue(4,-1);
+  query_.bindValue(5,-1);
+  int ret_ = query_.exec();
+  if(ret_)
+  {
+
+    query_.exec("select max(id) from T3ExpressTask");
+    query_.next();
+    return query_.value(0).toInt();
+
+  }else
+  {
+    T3LOG << "insert ExpressTask failed";
+    return -1;
+  }
+
+}
+
+int T3ExpressTaskDB::getExpressTaskByTask(model::T3TaskModel &task,
+                                          model::T3ExpressTask expressTask)
+{
+  QSqlQuery query_;
+  query_.prepare("select * from T3ExpressTask where TaskId = ?");
+  query_.bindValue(0,task.getId());
+  bool ret_ = query_.exec();
+  if(!ret_)
+  {
+    T3LOG << "search expressTask failed";
+    return -1;
+  }
+  query_.next();
+  int receiverId_ = query_.value(3).toInt();
+  model::T3UserInfo receiver_;
+  _userInfoDB.getUserInfoById(receiverId_,
+                              receiver_);
+  expressTask.setId(task.getId());
+  expressTask.setType(task.getType());
+  expressTask.setSender(task.getSender());
+  expressTask.setPriority(task.getPriority());
+  expressTask.setState(task.getState());
+  expressTask.setReceiver(receiver_);
+
+  return 0;
+}
+}
+

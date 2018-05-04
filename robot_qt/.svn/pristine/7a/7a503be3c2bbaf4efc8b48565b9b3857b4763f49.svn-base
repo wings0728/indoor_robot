@@ -1,0 +1,172 @@
+/**
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  qnode.hpp
+  * 作者    Jincheng
+  * 版本    V1.0.0
+  * 日期    2018.04.16
+  * 说明
+  ******************************************************************************
+*/
+/*****************************************************************************
+** Ifdefs
+*****************************************************************************/
+
+#ifndef robot_qt_QNODE_HPP_
+#define robot_qt_QNODE_HPP_
+
+/*****************************************************************************
+** Includes
+*****************************************************************************/
+
+#include <ros/ros.h>
+#include <string>
+#include <QThread>
+#include <QStringListModel>
+#include <vector>
+#include <nav_msgs/Odometry.h>
+#include <std_msgs/Bool.h>
+//#include "../qt/t3_af_config.hpp"
+#include "nav_msgs/Path.h"
+#include "robot_qt/SensorState.h"
+#include "../model/T3PositionModel.hpp"
+/*****************************************************************************
+** Namespaces
+*****************************************************************************/
+
+namespace interface {
+
+/*****************************************************************************
+** Class
+*****************************************************************************/
+
+class QNode : public QThread {
+    Q_OBJECT
+public:
+  //坐标点列表
+  std::vector<T3PositionModel *> _positionList;
+
+  static QNode * getInstance();
+  bool init(int argc, char** argv );
+	void run();
+
+	/*********************
+	** Logging
+	**********************/
+	enum LogLevel {
+	         Debug,
+	         Info,
+	         Warn,
+	         Error,
+	         Fatal
+	 };
+
+  enum OprationMode {
+           Auto,
+           Manual
+   };
+
+  enum ManualCmd {
+           Forward,
+           Backward,
+           LeftTurn,
+           RightTurn,
+           Stop
+   };
+
+	QStringListModel* loggingModel() { return &logging_model; }
+	void log( const LogLevel &level, const std::string &msg);
+  void shutDownRos();
+
+  bool goalUpdate(float x, float y, float z);
+  void setOperationMode(OprationMode mode);
+  /**
+   * @brief 获取机器人坐标
+   * @return 机器人坐标
+   */
+  std::vector<double> getRobotPose();
+  /**
+   * @brief 获取机器人原点
+   * @return 原点坐标
+   */
+  std::vector<double> getMapOrigin();
+  /**
+   * @brief 获取当前的全局路径
+   * @param 传入一个存储路径的数组
+   * @return
+   */
+  bool getGlobalPlan(QList<std::pair<double, double> >& plan);
+  /**
+   * @brief 设置手动或自动
+   * @param cmd
+   * @return
+   */
+  bool setManualCmd(ManualCmd cmd);
+  OprationMode getOprationMode();
+  int getBatt();
+  void getRobotSpeed(double* linearX, double* anglarZ);
+
+
+  bool isLowPower();
+  bool isAborted();
+Q_SIGNALS:
+	void loggingUpdated();
+  void rosShutdown();
+  void poseUpdated();
+  void globalPlanGet();
+  void lowPower();
+  void isAbortedSignal(bool a);
+
+
+private:
+  int init_argc;
+  char** init_argv;
+	ros::Publisher chatter_publisher;
+  ros::Publisher _robotGoal;
+  ros::Publisher _cmdVelPub;
+  ros::Publisher _checkNetPub;
+  ros::Publisher _oprationModePub;
+  ros::Subscriber _odomSub;
+  ros::Subscriber _globalPlanSub;
+  ros::Subscriber _batterySub;
+  ros::Subscriber _isAbortedSub;
+  QStringListModel logging_model;
+  //robot pose
+  std::vector<double> _robotPose;
+  //map origin pose
+  std::vector<double> _mapOrigin;
+  QList<std::pair<double, double> > _globalPlan;
+//    ros::NodeHandle _privateNh;
+  std::string _robotPoseTopicName;
+  std::string _globalPlanTopicName;
+  double _linearX;
+  double _angularZ;
+  double _OdomLinearX;
+  double _OdomAngularZ;
+  double _maxLinearX;
+  double _maxAngularZ;
+  int _battPer;
+  bool _isLowPower;
+  bool _isAborted;
+  OprationMode _oprationMode;
+  QNode();
+  virtual ~QNode();
+
+
+//    bool init(const std::string &master_url, const std::string &host_url);
+    void pubRobotSpeed();
+    void getParam(ros::NodeHandle& n);
+    /**
+     * @brief 拿取launch文件中的position坐标点
+     * @param n
+     */
+    void getPositions(ros::NodeHandle& n);
+    void getOdomCallback(const nav_msgs::Odometry& msg);
+    void getGlobalPlanCallback(const nav_msgs::Path& pathMsg);
+    void getStateCallback(const robot_qt::SensorState& msg);
+    void getActionStateCallback(const std_msgs::Bool& msg);
+};
+
+}  // namespace rosgui
+
+#endif /* rosgui_QNODE_HPP_ */

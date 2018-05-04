@@ -1,0 +1,104 @@
+#include "T3UserInfo.hpp"
+
+namespace model {
+
+T3UserInfo::T3UserInfo()
+{
+  _id = -1;
+  _name = "";
+  _age = -1;
+  _ip = "";
+}
+
+void T3UserInfo::setID(int id)
+{
+  _id = id;
+}
+
+int T3UserInfo::getID()
+{
+  return _id;
+}
+
+void T3UserInfo::setName(QString name)
+{
+  _name = name;
+}
+QString T3UserInfo::getName()
+{
+  return _name;
+}
+
+void T3UserInfo::setPwd(QString  pwd)
+{
+  _pwd = pwd;
+}
+
+QString  T3UserInfo::getPwd()
+{
+  return _pwd;
+}
+
+void T3UserInfo::setGender(eUserGender gender)
+{
+  _gender = gender;
+}
+
+eUserGender T3UserInfo::getGender()
+{
+  return _gender;
+}
+void T3UserInfo::setAge(int age)
+{
+  _age = age;
+}
+int T3UserInfo::getAge()
+{
+  return _age;
+}
+void T3UserInfo::setIP(QString ip)
+{
+  _ip = ip;
+}
+
+QString T3UserInfo::getIP()
+{
+  return _ip;
+}
+
+void T3UserInfo::setFeature(QByteArray &feature)
+{
+  _feature = feature;
+}
+
+QByteArray& T3UserInfo::getFeature()
+{
+  return _feature;
+}
+
+void T3UserInfo::setType(eUserType type)
+{
+  _type = type;
+}
+
+eUserType T3UserInfo::getType()
+{
+  return _type;
+}
+
+void T3UserInfo::setPosition(T3PositionModel& position)
+{
+  _position = position;
+}
+
+T3PositionModel& T3UserInfo::getPosition()
+{
+  return _position;
+}
+
+T3UserInfo::~T3UserInfo()
+{
+
+}
+
+}

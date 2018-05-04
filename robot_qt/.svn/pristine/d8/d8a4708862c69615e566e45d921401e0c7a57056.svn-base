@@ -1,0 +1,9 @@
+add the facelogin image
+--此行及以下内容将会被忽略--
+
+AM   resources/室内机器人UI界面/新增加/212.jpg
+AM   resources/室内机器人UI界面/新增加/di1.png
+AM   resources/室内机器人UI界面/新增加/di2.png
+M    src/controller/T3MainController.cpp
+M    src/controller/T3StaffController.cpp
+M    src/controller/T3StaffController.hpp

@@ -1,0 +1,45 @@
+/**
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  T3MapController.cpp
+  * 作者    Jincheng
+  * 版本    V1.0.0
+  * 日期    2018.04.16
+  * 说明
+  ******************************************************************************
+*/
+#include "T3MapController.hpp"
+#include "../config/config.hpp"
+#include "T3GuideChoiceController.hpp"
+#include <QTimer>
+
+#define kMapBGPath "://images/mainBackground.png"
+#define kMapDelayTime 10000
+
+T3MapController::T3MapController(T3PositionModel *goal, T3Pose *currentPose, T3BaseController *parent):
+  _goal(goal),
+  _currentPose(currentPose),
+  T3BaseController(0, 0, kScreenW, kScreenH, kMapBGPath, true, parent)
+
+{
+  _mapTimer = new QTimer(this);
+  connect(_mapTimer, SIGNAL(timeout()), this, SLOT(showGuideChoice()));
+}
+
+void T3MapController::showUIdo()
+{
+  _mapTimer->start(kMapDelayTime);
+}
+
+void T3MapController::showGuideChoice()
+{
+  qDebug() << "showGuideChoice";
+  T3GuideChoiceController *gc = new T3GuideChoiceController(_goal, _currentPose, this->_parent);
+  gc->showUI();
+  delete this;
+}
+
+T3MapController::~T3MapController()
+{
+  delete _mapTimer;
+}

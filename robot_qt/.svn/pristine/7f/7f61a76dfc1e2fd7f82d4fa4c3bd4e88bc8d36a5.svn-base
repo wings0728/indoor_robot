@@ -1,0 +1,9 @@
+#include "T3UserModel.hpp"
+namespace model {
+  T3UserModel::T3UserModel()
+
+  {
+    _userType = user;
+  }
+  T3UserModel::~T3UserModel(){}
+}

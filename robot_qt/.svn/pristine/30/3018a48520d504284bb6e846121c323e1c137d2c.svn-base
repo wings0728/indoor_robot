@@ -1,0 +1,45 @@
+#include "T3PositionModel.hpp"
+
+
+T3PositionModel::T3PositionModel()
+{
+  _id = -1;
+  _poseName = "";
+}
+
+T3PositionModel::T3PositionModel(QString name, T3Pose &pose):
+  _poseName(name),
+  _pose(pose)
+{
+
+}
+
+void T3PositionModel::setId(int id)
+{
+  _id = id;
+}
+
+int T3PositionModel::getId()
+{
+  return _id;
+}
+void T3PositionModel::setPoseName(QString poseName)
+{
+  _poseName = poseName;
+}
+
+QString T3PositionModel::getPoseName()
+{
+  return _poseName;
+}
+
+void T3PositionModel::setPose(T3Pose &pose)
+{
+  _pose = pose;
+}
+
+T3Pose& T3PositionModel::getPose()
+{
+  return _pose;
+}
+

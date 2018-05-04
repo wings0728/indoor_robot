@@ -1,0 +1,70 @@
+#ifndef T3USERINFODATABASE_H
+#define T3USERINFODATABASE_H
+
+/**
+  ******************************************************************************
+  * @file
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/03/13
+  * @brief      用户信息的数据库操作
+  ******************************************************************************
+*/
+
+#include "T3Database.hpp"
+#include "T3PositionDB.hpp"
+#include "../model/T3UserInfo.hpp"
+#include "../model/T3PositionModel.hpp"
+
+namespace interface
+{
+
+
+class T3UserInfoDatabase
+{
+public:
+  explicit T3UserInfoDatabase();
+  ~T3UserInfoDatabase();
+
+  /**
+   * @brief 获得用户人脸库数据
+   * @param faceInfoList 用户数据列表
+   * @return 状态码
+   */
+  void loadFaceDatabase(QList<model::T3UserInfo> &userInfoList);
+
+  /**
+   * @brief   添加一个新的人员数据
+   * @param   faceInfo [in]人员信息
+   * @return  返回值为正值时表示添加的记录的Id,为负值时表示添加失败
+   */
+  int addNewFaceInfo(model::T3UserInfo &userInfo);
+
+  /**
+   * @brief getUserInfoyId  通过Id查找用户信息
+   * @param id              [in]需要查找的用户Id
+   * @param userInfo        [out] 查找到的用户信息
+   * @return                返回值为0时表示查询成功,为负值时表示查询失败
+   */
+  int getUserInfoById(int id,
+                      model::T3UserInfo &userInfo);
+  /**
+   * @brief insertRobotSelf 插入一个机器人本体用户类型
+   * @return                返回值为正值时表示添加的记录的Id,为负值时表示添加失败
+   */
+  int insertRobotSelf();
+
+  /**
+   * @brief getRobotSelf 得到机器人本体身份
+   * @param robotSelf    [out]机器人本体数据
+   * @return              返回值为0时表示查询成功,为负值时表示查询失败
+   */
+  int getRobotSelf(model::T3UserInfo &robotSelf);
+
+
+private:
+  T3PositionDB _positionDB;
+};
+}
+
+#endif // T3USERINFODATABASE_H

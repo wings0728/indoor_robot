@@ -1,0 +1,48 @@
+<launch>
+    <arg name="use_sim_time" default="true"/>
+    <!-- urdf -->
+<!--
+    <arg name="urdf_file" default="$(find xacro)/xacro '$(find launch_robot)/urdf/robot.urdf.xacro'"/>
+    <param name="robot_description" command="$(arg urdf_file)"/>
+-->
+    
+<!--
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="50.0" />
+    </node>
+-->
+
+    <!-- connect to hardware and lidar and IMU-->
+    <!-- <include file="$(find launch_robot)/launch/core.launch"/>-->
+    <!-- <include file="$(find flashgo)/launch/lidar.launch"/>-->
+    <!-- <include file="$(find imu_serial)/launch/imu_serial_node.launch"/>-->
+    <!-- map server -->
+    <arg name="map_file" default="$(find launch_robot)/maps/map.yaml"/>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+    <!-- AMCL -->
+    <include file="$(find launch_robot)/launch/amcl.launch.xml"/>
+
+    <!-- move_base -->
+    <arg name="cmd_vel_topic" default="/cmd_vel" />
+    <arg name="odom_topic" default="odom" />
+    
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+        <rosparam file="$(find launch_robot)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find launch_robot)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find launch_robot)/params/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find launch_robot)/params/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find launch_robot)/params/move_base_params.yaml" command="load" />
+        <rosparam file="$(find launch_robot)/params/dwa_local_planner_params.yaml" command="load" />
+
+        <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+        <remap from="odom" to="$(arg odom_topic)"/>
+    </node>
+
+    <!-- t3_sendGoals -->
+    <node pkg="t3_goal" name="t3_sendGoals" type="t3_goal" output="screen">
+        <rosparam file="$(find t3_goal)/param/goals_params.yaml" command="load"/>
+    </node>
+
+</launch>

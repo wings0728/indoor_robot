@@ -1,0 +1,26 @@
+add the network
+--此行及以下内容将会被忽略--
+
+M    src/config/config.hpp
+M    src/controller/T3FaceSignInController.cpp
+M    src/controller/T3FaceSignInController.hpp
+M    src/controller/T3HardwareStartController.cpp
+M    src/controller/T3HardwareStartController.hpp
+M    src/controller/T3MainController.cpp
+M    src/controller/T3MainController.hpp
+A    src/controller/T3SendExpressController.cpp
+A    src/controller/T3SendExpressController.hpp
+A    src/controller/T3SendExpressFinishController.cpp
+A    src/controller/T3SendExpressFinishController.hpp
+M    src/controller/T3StaffController.cpp
+M    src/controller/T3StaffController.hpp
+M    src/controller/T3StandbyController.cpp
+M    src/controller/baseController/T3BaseController.cpp
+M    src/controller/baseController/T3BaseController.hpp
+M    src/controller/baseController/T3ChoiceController.hpp
+M    src/controller/baseController/T3SwitchController.cpp
+M    src/face/T3FaceScan.cpp
+M    src/face/T3FaceScan.h
+D    src/model/T3Weather.cpp
+D    src/model/T3Weather.h
+M    src/network/T3Network.cpp

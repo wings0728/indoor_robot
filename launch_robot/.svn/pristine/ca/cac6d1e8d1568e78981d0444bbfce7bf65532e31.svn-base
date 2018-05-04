@@ -1,0 +1,4 @@
+launch_robot.sh:
+	runs the launchfile "launch_robot.launch" using the follow command:
+		$ roslaunch --wait launch_robot launch_robot.launch
+	--wait allows the execution of the launchfile only after the rosmaster is up

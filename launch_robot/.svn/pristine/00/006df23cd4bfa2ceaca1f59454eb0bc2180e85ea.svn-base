@@ -1,0 +1,7 @@
+image: /home/t001/catkin_ws/launch_robot/maps/mymap.pgm
+resolution: 0.050000
+origin: [-10.885551, -2.051156, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

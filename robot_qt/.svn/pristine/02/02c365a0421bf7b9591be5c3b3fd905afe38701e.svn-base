@@ -1,0 +1,99 @@
+#include "T3MainController.hpp"
+#include "../config/config.hpp"
+
+T3MainController::T3MainController()
+{
+  showUnderground();
+  initInstance();
+}
+
+T3MainController::~T3MainController()
+{
+  if(NULL != _camera)
+  {
+    delete _camera;
+    _camera = NULL;
+  }
+
+  if(NULL != _face)
+  {
+    delete _face;
+    _face = NULL;
+  }
+  if(NULL != _faceScan)
+  {
+    delete _faceScan;
+    _faceScan = NULL;
+  }
+  if(NULL != _network)
+  {
+    delete _network;
+    _network = NULL;
+  }
+  if(NULL != _taskSchedu)
+  {
+    delete _taskSchedu;
+    _taskSchedu = NULL;
+  }
+  if(NULL != _taskDB)
+  {
+    delete _taskDB;
+    _taskDB = NULL;
+  }
+}
+
+/**
+ * 初始化所有单例
+ */
+void T3MainController::initInstance()
+{
+
+    T3LOG << "start init";
+    _camera = interface::T3Camera::getInstance();
+    _face = interface::T3Face::getInstance();
+    _faceScan = interface::T3FaceScan::getInstance();
+    _network = interface::T3Network::getInstance();
+    _taskSchedu = task::T3TaskScheduling::getInstance();
+    _taskDB = interface::T3TaskDatabase::getInstance();
+    T3LOG << "end init";
+}
+
+/**
+ * 底层界面
+ */
+void T3MainController::showUnderground()
+{
+  T3View::T3Dialog* underground_ = new T3View::T3Dialog(kScreenX,
+                                            kScreenY,
+                                            kScreenW,
+                                            kScreenH,
+                                            Qt::black);
+  underground_->show();
+}
+
+/****** 构建所有界面跳转逻辑 *******/
+void T3MainController::run()
+{
+  //_hsc = new T3WaitController();
+  //_hsc->showUI();
+}
+
+
+
+int T3MainController::loadNewFace()
+{
+  /*_face = interface::T3Face::getInstance();
+  T3LOG << "face";
+  _faceImage.load("/home/kzw/face/陈健俊.jpg");
+  _faceImage.load("/home/t3hxp/face/陈健俊.jpg");
+  _faceImage.load("/home/t3hxp/face/扈学鹏.jpg");
+  _userInfo = new model::T3UserInfo();
+  _userInfo->setName("扈学鹏");
+  _userInfo->setAge(12);
+  _face->addNewUserInfo(_faceImage,
+                        *_userInfo);*/
+}
+
+
+
+

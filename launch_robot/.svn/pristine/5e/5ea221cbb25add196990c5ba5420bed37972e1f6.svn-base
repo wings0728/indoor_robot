@@ -1,0 +1,17 @@
+!!!!!! BE CAREFUL !!!!!!
+	make sure that the instructions below are followed exactly, or else it might cause major problem to the system
+
+
+in the command line, run:
+	$ sudo visudo
+the above command, leads to /etc/sudoers
+
+at the end of the file, add the following line:
+	t001 ALL = NOPASSWD: /sbin/shutdown
+	%admin ALL = NOPASSWD: /sbin/shutdown
+where t001 is the username of this system. if the username is not t001, please change accordingly
+
+save and quit the file
+
+now the system can be shutdown without password using the following command:
+	$ sudo shutdown -h now

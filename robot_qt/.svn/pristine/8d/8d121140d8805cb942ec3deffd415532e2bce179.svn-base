@@ -1,0 +1,16 @@
+#ifndef robot_qt_T3GUESTMODEL_HPP_
+#define robot_qt_T3GUESTMODEL_HPP_
+
+#include "T3BaseUserModel.hpp"
+
+namespace model {
+class T3GuestModel : public T3BaseUserModel {
+
+public:
+  explicit T3GuestModel();
+  ~T3GuestModel();
+
+};
+}
+
+#endif

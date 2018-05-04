@@ -1,0 +1,52 @@
+#include "T3BaseUserModel.hpp"
+
+namespace model {
+  T3BaseUserModel::T3BaseUserModel()
+  {
+
+  }
+
+  T3BaseUserModel::~T3BaseUserModel()
+  {}
+
+  QByteArray T3BaseUserModel::getFaceFeature()
+  {
+    return this->_userFaceFeature;
+  }
+  int T3BaseUserModel::getUserAge()
+  {
+    return this->_userAge;
+  }
+  QString T3BaseUserModel::getUserName()
+  {
+    return this->_userName;
+  }
+  eUserGender T3BaseUserModel::getUserGender()
+  {
+    return this->_userGender;
+  }
+  eUserType T3BaseUserModel::getUserType()
+  {
+    return this->_userType;
+  }
+
+  void T3BaseUserModel::setFaceFeature(QByteArray faceFeature)
+  {
+    this->_userFaceFeature = faceFeature;
+  }
+  void T3BaseUserModel::setUserAge(int age)
+  {
+    this->_userAge = age;
+  }
+  void T3BaseUserModel::setUserName(QString userName)
+  {
+    this->_userName = userName;
+  }
+  void T3BaseUserModel::setUserGender(eUserGender gender)
+  {
+    this->_userGender = gender;
+  }
+
+
+
+}

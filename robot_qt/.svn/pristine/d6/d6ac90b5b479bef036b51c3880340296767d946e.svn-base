@@ -1,0 +1,136 @@
+#ifndef robot_qt_T3FACE_HPP_
+#define robot_qt_T3FACE_HPP_
+
+#include <QList>
+#include <QImage>
+#include <QByteArray>
+#include <QThread>
+#include <QTimer>
+#include <QColor>
+#include <QRgb>
+
+#include "../T3base/T3IOBase.hpp"
+#include "../model/T3UserInfo.hpp"
+#include "../model/T3FaceRecognInfo.hpp"
+#include "../model/T3FacePositionInfo.hpp"
+#include "../database/T3UserInfoDatabase.h"
+
+#include "../config/asvloffscreen.h"
+#include "arcsoft_fsdk_face_tracking.h"
+#include "arcsoft_fsdk_face_recognition.h"
+#include "arcsoft_fsdk_age_estimation.h"
+#include "arcsoft_fsdk_gender_estimation.h"
+/**
+  ******************************************************************************
+  * @file
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/02/24
+  * @brief      人脸识别相关类
+  ******************************************************************************
+*/
+
+namespace interface {
+enum T3FaceIdenIdenCode
+{
+    FTEngineInitError,
+    FREngineInitError,
+    FGEngineInitError,
+    FAEngineInitError,
+    DetechFaceError,
+    NotDetechFace,
+    DetechFace,
+    FaceEngineBeReady
+
+};
+class T3Face :public QThread, public T3IOBase
+{
+    Q_OBJECT
+public:
+    /**
+     * @brief getInstance 得到单例对象
+     * @return            单例对象指针
+     */
+    static T3Face* getInstance();
+
+    ~T3Face();
+
+    /**
+     * @brief getFaceFeature    提取传入图片中人脸信息的特征值
+     * @param faceImage         人脸照片(输入)
+     * @param faceFeature       人脸特征值(输出)
+     * @return                  状态码
+     */
+    T3FaceIdenIdenCode getFaceFeature(QImage &faceImage,
+                                      QByteArray &faceFeature);
+    /**
+     * @brief detectFacePosition  探测人脸位置信息
+     * @param frameData           [in]视频帧数据
+     * @param faceRecognInfo      [out]探测到的人脸信息(数量,位置)
+     * @return
+     */
+    T3FaceIdenIdenCode detectFacePosition(QByteArray &frameData,
+                                          model::T3FaceRecognInfo &faceRecognInfo);
+
+    T3FaceIdenIdenCode facePairMatch();
+
+    /**
+     * @brief addNewUserInfo 添加一个新的用户信息
+     * @param image 用户的照片
+     * @param userInfo 其他用户信息
+     */
+    void addNewUserInfo(const QImage &image,
+                        model::T3UserInfo &userInfo);
+
+signals:
+    void faceRecognInfo(model::T3UserInfo &userInfo);
+
+private:
+
+    /**
+     * @brief initT3Face 初始化T3Face
+     */
+    void initT3Face();
+
+    static T3Face* t3face;
+    int     _frameIndex;
+
+    T3UserInfoDatabase *_userInfoDatabase;
+    QByteArray *_frameData;
+    QList<model::T3UserInfo> _userInfoLists;
+
+
+    bool _faceBeReady;
+
+    void *_FTEngine;
+    unsigned char *_FTWorkMem;
+    void *_FREngine;
+    unsigned char *_FRWorkMem;
+    void *_FGEngine;
+    unsigned char *_FGWorkMem;
+    void *_FAEngine;
+    unsigned char *_FAWorkMem;
+    LPAFT_FSDK_FACERES _faceResult;
+
+    T3Face(QObject* parent = NULL);
+
+
+
+    T3FaceIdenIdenCode ageEstimation();
+    T3FaceIdenIdenCode genderEstimatiom();
+    T3FaceIdenIdenCode initFaceEngine();
+    int extractFRFeature(QByteArray &frameData,
+                     int frameWidth,
+                     int frameHeight,
+                     int frameFormat,
+                     MRECT *rect,
+                     int faceOrient,
+                     AFR_FSDK_FACEMODEL* faceModels);
+
+
+
+
+
+};
+}
+#endif

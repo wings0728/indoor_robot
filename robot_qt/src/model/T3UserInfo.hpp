@@ -1,0 +1,68 @@
+#ifndef robot_qt_T3USERINFO_HPP
+#define robot_qt_T3USERINFO_HPP
+
+
+#include "../T3base/T3IOBase.hpp"
+#include "T3PositionModel.hpp"
+
+
+namespace model {
+
+enum eUserType
+{
+  eUnknow,
+  eGuest,
+  eUser,
+  eAdmin,
+  eDeveloper,
+  eSelf
+};
+enum eUserGender
+{
+  eMale,
+  eFemale
+};
+
+class T3UserInfo : T3IOBase
+{
+public:
+  explicit T3UserInfo();
+  ~T3UserInfo();
+  void setID(int id);
+  void setName(QString name);
+  void setPwd(QString pwd);
+  void setGender(eUserGender gender);
+  void setAge(int age);
+  void setIP(QString ip);
+  void setFeature(QByteArray &feature);
+  void setType(eUserType type);
+  void setPosition(T3PositionModel& position);
+
+  int getID();
+  QString getName();
+  QString getPwd();
+  eUserGender getGender();
+  int getAge();
+  QString getIP();
+  QByteArray& getFeature();
+  eUserType getType();
+  T3PositionModel& getPosition();
+
+
+private:
+  int _id;
+  QString _name;
+  QString _pwd;
+  eUserGender _gender;     //false表示男,true表示女
+  int _age;
+  QString _ip;
+  QByteArray _feature;
+  eUserType _type;
+  T3PositionModel _position;
+
+
+};
+
+}
+
+#endif

@@ -1,0 +1,67 @@
+#include "T3PositionDB.hpp"
+
+
+
+namespace interface
+{
+
+
+T3PositionDB::T3PositionDB()
+{
+
+}
+T3PositionDB::~T3PositionDB()
+{
+
+}
+
+int T3PositionDB::addNewPosition(T3PositionModel &position)
+{
+
+
+  int poseId = _poseDB.addNewPose(position.getPose());
+  QSqlQuery query_;
+  query_.prepare("insert into T3Position values(NULL,?,?)");
+  query_.bindValue(0,position.getPoseName());
+  query_.bindValue(1,poseId);
+  int ret_ = query_.exec();
+  if(ret_)
+  {
+
+    query_.exec("select max(id) from T3Position");
+    query_.next();
+    return query_.value(0).toInt();
+
+  }else
+  {
+    T3LOG << "insert pose failed";
+    return -1;
+  }
+}
+
+int T3PositionDB::getPositionById(int id,
+                                     T3PositionModel &position)
+{
+  QSqlQuery query_;
+  query_.prepare("select * from T3Position where id = ?");
+  query_.bindValue(0,id);
+  bool ret_ = query_.exec();
+  if(!ret_)
+  {
+    T3LOG << "search Pose failed";
+    return -1;
+  }
+  query_.next();
+
+  QString name_ = query_.value(1).toString();
+  int poseId = query_.value(2).toInt();
+  T3Pose pose;
+  _poseDB.getPoseById(poseId,
+                      pose);
+
+  position.setPoseName(name_);
+  position.setPose(pose);
+
+  return 0;
+}
+}

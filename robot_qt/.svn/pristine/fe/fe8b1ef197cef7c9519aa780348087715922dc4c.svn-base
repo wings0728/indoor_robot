@@ -1,0 +1,6 @@
+#include "T3RobotStateDB.hpp"
+
+T3RobotStateDB::T3RobotStateDB()
+{
+
+}

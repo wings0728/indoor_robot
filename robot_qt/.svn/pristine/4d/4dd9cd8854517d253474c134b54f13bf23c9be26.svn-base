@@ -1,0 +1,65 @@
+#include "T3InterviewTaskDB.hpp"
+
+
+namespace interface
+{
+T3InterviewTaskDB::T3InterviewTaskDB()
+{
+  _taskDB = T3TaskDatabase::getInstance();
+}
+
+int T3InterviewTaskDB::addNewInterviewTask(model::T3InterviewTask &interviewTask)
+{
+  QSqlQuery query_;
+  int taskId_ = _taskDB->addNewTask(interviewTask);
+
+  query_.prepare("insert into T3InterviewTask values(NULL,?,?,?,?,?,?)");
+
+
+  query_.bindValue(0,taskId_);
+  query_.bindValue(1,-1);
+  query_.bindValue(2,-1);
+  query_.bindValue(3,interviewTask.getInterviewDate());
+  query_.bindValue(4,-1);
+  query_.bindValue(5,-1);
+  int ret_ = query_.exec();
+  if(ret_)
+  {
+
+    query_.exec("select max(id) from T3InterviewTask");
+    query_.next();
+    return query_.value(0).toInt();
+
+  }else
+  {
+    T3LOG << "insert InterviewTask failed";
+    return -1;
+  }
+}
+
+
+int T3InterviewTaskDB::getInterViewTaskByTask(model::T3TaskModel &task,
+                                              model::T3InterviewTask &interviewTask)
+{
+  QSqlQuery query_;
+  query_.prepare("select * from T3InterviewTask where TaskId = ?");
+  query_.bindValue(0,task.getId());
+  bool ret_ = query_.exec();
+  if(!ret_)
+  {
+    T3LOG << "search expressTask failed";
+    return -1;
+  }
+  query_.next();
+  QDateTime interviewDate_ = query_.value(4).toDateTime();
+  interviewTask.setId(task.getId());
+  interviewTask.setType(task.getType());
+  interviewTask.setSender(task.getSender());
+  interviewTask.setPriority(task.getPriority());
+  interviewTask.setState(task.getState());
+  interviewTask.setInterviewDate(interviewDate_);
+
+  return 0;
+}
+}
+

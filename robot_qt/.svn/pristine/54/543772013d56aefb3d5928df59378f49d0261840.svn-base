@@ -1,0 +1,15 @@
+add the taskScheduing
+--此行及以下内容将会被忽略--
+
+M    src/config/config.hpp
+M    src/controller/T3MainController.cpp
+M    src/controller/T3MainController.hpp
+M    src/database/T3TaskDatabase.cpp
+M    src/database/T3TaskDatabase.hpp
+M    src/face/T3Face.hpp
+M    src/face/T3FaceScan.cpp
+M    src/face/T3FaceScan.h
+D    src/model/T3TaskModel.cpp.edited
+M    src/task/T3Task.cpp
+M    src/task/T3TaskScheduling.cpp
+M    src/task/T3TaskScheduling.hpp

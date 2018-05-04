@@ -1,0 +1,38 @@
+#include "T3WifiButton.hpp"
+namespace T3View {
+
+T3WifiButton::T3WifiButton(QWidget *parent,
+                           int x,
+                           int y,
+                           int w,
+                           int h,
+                           const QString &normalImage,
+                           const QString &pressedImage,
+                           QString wifiSSID,
+                           bool encryptStatus,
+                           int signalValue):
+  T3Button(parent,x,y,w,h,normalImage,pressedImage)
+{
+  setWifiButton();
+  setWifiSSID(wifiSSID);
+  setEncryptStatus(encryptStatus);
+  setSignal(signalValue);
+}
+
+void T3WifiButton::setWifiButton()
+{
+
+}
+void T3WifiButton::setWifiSSID(QString wifiSSID)
+{
+  _wifiSSID = new T3View::T3Label();
+}
+void T3WifiButton::setEncryptStatus(bool encryptStatus)
+{
+  _encryptStatus = new T3View::T3Label();
+}
+void T3WifiButton::setSignal(int signalValue)
+{
+  _signalValue = new T3View::T3Label();
+}
+}

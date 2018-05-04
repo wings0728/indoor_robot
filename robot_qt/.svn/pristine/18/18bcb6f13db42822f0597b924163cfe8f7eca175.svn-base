@@ -1,0 +1,40 @@
+#ifndef T3WIFI_HPP
+#define T3WIFI_HPP
+/**
+  ******************************************************************************
+  * @file
+  * @author  孔志伟
+  * @version  V1.0.0
+  * @date    2018/04/24
+  * @brief   wifi
+  ******************************************************************************
+*/
+
+#include "../controller/baseController/T3UserController.hpp"
+#include <QProcess>
+
+class T3Wifi:public T3UserController
+{
+  Q_OBJECT
+public:
+
+
+private:
+  T3Wifi();
+  void init();
+  //void saveWifi();//将已连接的wifi保存
+  //void closeWifi();
+
+  QProcess *_process;
+  T3View::T3Label *_label;
+  QString _out;
+
+private slots:
+  void readOut();
+  void searchWifi();
+  //void connectWifi();
+
+
+};
+
+#endif // T3WIFI_HPP

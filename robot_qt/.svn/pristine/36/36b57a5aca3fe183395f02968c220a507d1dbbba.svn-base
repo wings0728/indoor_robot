@@ -1,0 +1,23 @@
+#ifndef T3ROBOTSTATEDB_HPP
+#define T3ROBOTSTATEDB_HPP
+/**
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  T3RobotStateDB.hpp
+  * 作者    HXP
+  * 版本    V1.0.0
+  * 日期    2018.04.26
+  * 说明    机器人状态数据库操作
+  ******************************************************************************
+*/
+
+class T3RobotStateDB
+{
+public:
+  T3RobotStateDB();
+
+
+
+};
+
+#endif // T3ROBOTSTATEDB_HPP

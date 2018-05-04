@@ -1,0 +1,12 @@
+#include "T3ExpressTaskModel.hpp"
+
+
+namespace model
+{
+
+T3ExpressTaskModel::T3ExpressTaskModel()
+{
+
+}
+}
+

@@ -1,0 +1,79 @@
+#include "T3TaskScheduling.hpp"
+
+
+namespace task
+{
+T3TaskScheduling::T3TaskScheduling()
+{
+
+}
+
+T3TaskScheduling* T3TaskScheduling::_taskScheduling = new T3TaskScheduling();
+
+T3TaskScheduling* T3TaskScheduling::getInstance()
+{
+
+
+  return _taskScheduling;
+}
+
+T3TaskScheduling::~T3TaskScheduling()
+{
+
+}
+
+int T3TaskScheduling::initTaskScheduing()
+{
+  _taskDB = interface::T3TaskDatabase::getInstance();
+  connect(_taskDB,
+          &interface::T3TaskDatabase::newTask,
+          this,
+          &T3TaskScheduling::getNewTask);
+  _task = T3Task::getInstance();
+  connect(_task,
+          &T3Task::taskFinish,
+          this,
+          &T3TaskScheduling::taskFinish);
+
+}
+
+void T3TaskScheduling::getNewTask(model::T3TaskModel task)
+{
+  if(task.getType() > model::eTHardware && task.getType() <= model::eTShowUI)
+  {
+    switch (task.getPriority()) {
+    case 0:
+       _taskListZero.append(task);
+      break;
+    case 1:
+      _taskListFirst.append(task);
+      break;
+    case 2:
+      _taskListSecond.append(task);
+      break;
+    case 3:
+      _taskListThird.append(task);
+      break;
+    default:
+      T3LOG << "not support the task priority";
+      break;
+    }
+  }
+}
+
+int T3TaskScheduling::startTaskScheduling()
+{
+    model::T3TaskModel sign_(eTSign);
+    _task->runTask(sign_);
+    model::T3TaskModel standby_(eTStandby);
+    _task->runTask(standby_);
+}
+
+void T3TaskScheduling::taskFinish()
+{
+
+}
+
+
+}
+

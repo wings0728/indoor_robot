@@ -1,0 +1,15 @@
+#include "T3NavigationTaskDB.hpp"
+namespace interface {
+
+
+}
+T3NavigationTaskDB::T3NavigationTaskDB()
+{
+
+}
+
+
+int T3NavigationTaskDB::addNewNavigation(model::T3NavigationTaskModel navigation)
+{
+
+}

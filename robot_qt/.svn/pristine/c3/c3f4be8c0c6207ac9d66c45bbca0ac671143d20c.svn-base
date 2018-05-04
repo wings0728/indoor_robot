@@ -1,0 +1,62 @@
+#include "T3MainController.hpp"
+#include "../config/config.hpp"
+
+T3MainController::T3MainController()
+{
+
+  _hasPeople = false;
+  showUnderground();
+}
+
+T3MainController::~T3MainController()
+{
+
+}
+
+/**
+ * 初始化所有单例
+ */
+void T3MainController::initInstance()
+{
+
+
+}
+
+/**
+ * 底层界面
+ */
+void T3MainController::showUnderground()
+{
+  T3View::T3Dialog* underground_ = new T3View::T3Dialog(kScreenX,
+                                            kScreenY,
+                                            kScreenW,
+                                            kScreenH,
+                                            Qt::black);
+  underground_->show();
+}
+
+/****** 构建所有界面跳转逻辑 *******/
+void T3MainController::run()
+{
+
+}
+
+
+
+int T3MainController::loadNewFace()
+{
+  /*_face = interface::T3Face::getInstance();
+  T3LOG << "face";
+  _faceImage.load("/home/kzw/face/陈健俊.jpg");
+  _faceImage.load("/home/t3hxp/face/陈健俊.jpg");
+  _faceImage.load("/home/t3hxp/face/扈学鹏.jpg");
+  _userInfo = new model::T3UserInfo();
+  _userInfo->setName("扈学鹏");
+  _userInfo->setAge(12);
+  _face->addNewUserInfo(_faceImage,
+                        *_userInfo);*/
+}
+
+
+
+

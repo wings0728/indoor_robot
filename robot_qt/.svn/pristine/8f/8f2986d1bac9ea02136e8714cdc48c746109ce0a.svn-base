@@ -1,0 +1,119 @@
+#ifndef T3CAMERA_H
+#define T3CAMERA_H
+
+#include <stdio.h>
+#include <QThread>
+#include <QMutex>
+extern "C"
+{
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libswscale/swscale.h"
+#include "libavdevice/avdevice.h"
+}
+
+#include "../T3base/T3IOBase.hpp"
+/**
+  ******************************************************************************
+  * @file
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/03/21
+  * @brief      视频数据采集
+  ******************************************************************************
+*/
+
+namespace interface
+{
+
+
+class T3Camera :public QThread, public T3IOBase
+{
+    Q_OBJECT
+public:
+
+    ~T3Camera();
+
+    static T3Camera* getInstance();
+
+
+    /**
+     * @brief stopCamera 关闭摄像头
+     * @return
+     */
+    int stopCamera();
+
+    /**
+     * @brief getFrame    获得一帧视频数据
+     * @param frameData   帧数据
+     * @return            状态码
+     */
+    int getFrame(QByteArray &frameData);
+
+
+
+signals:
+    /**
+     * @brief newCameraFrame    得到一个新的视频帧
+     * @param cameraFrameData   视频帧数据
+     * @param cameraFrameSize   帧数据大小
+     */
+    void newCameraFrame(char const* cameraFrameData,
+                       int cameraFrameSize);
+
+    /**
+     * @brief newCameraAVFrame  得到一个新的视频帧
+     * @param frame             视频帧数据
+     */
+    void newCameraAVFrame(AVFrame frame);
+
+
+
+private:
+
+    /**
+     * @brief initCamera 初始化摄像头 每次得到摄像头单例的时候需要调用该函数进行初始化
+     * @return
+     */
+    int initCamera();
+    /**
+     * @brief startCamera 开启摄像头
+     * @return
+     */
+    int startCamera();
+    static T3Camera*     _camera;
+    int                 _ret;
+    int                 _cameraIndex;
+    bool                _isCanRun;
+    bool                _cameraInitSuccess;
+    int                 _getCameraNum;
+
+    AVFormatContext     *_formatCtx;
+    AVCodecContext      *_codecCtx;
+    AVCodec             *_codec;
+    AVFrame             *_frame;
+    AVFrame             *_frameYUYV;
+    AVPacket            *_packet;
+    struct SwsContext   *_imgConvertCtx;
+    QMutex              _lock;
+    AVDictionary        *_options;
+    QByteArray          _cameraFrame;
+    int                 _index;
+
+
+
+    explicit T3Camera();
+    void run();
+
+
+    /**
+     * @brief closeCamera  关闭摄像头
+     */
+
+    void closeCamera();
+
+
+
+};
+}
+#endif // T3CAMERA_H

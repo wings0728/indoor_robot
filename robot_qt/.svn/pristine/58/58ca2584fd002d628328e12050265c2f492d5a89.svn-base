@@ -1,0 +1,45 @@
+#include "T3TaskScheduling.hpp"
+
+
+namespace task
+{
+T3TaskScheduling::T3TaskScheduling()
+{
+  _isCanRun = false;
+}
+
+T3TaskScheduling* T3TaskScheduling::_taskScheduling = new T3TaskScheduling();
+
+T3TaskScheduling* T3TaskScheduling::getInstance()
+{
+  return _taskScheduling;
+}
+
+T3TaskScheduling::~T3TaskScheduling()
+{
+
+}
+
+int T3TaskScheduling::startTaskScheduling()
+{
+  start();
+}
+
+
+
+void T3TaskScheduling::run()
+{
+    ros::Rate loop_rate(30);
+    while(true)
+    {
+
+      QMutexLocker locker_(&_lock);
+      if(!_isCanRun)
+      {
+        return ;
+      }
+      loop_rate.sleep();
+    }
+}
+}
+

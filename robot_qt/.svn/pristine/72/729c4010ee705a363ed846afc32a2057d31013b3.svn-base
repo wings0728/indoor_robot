@@ -1,0 +1,46 @@
+#ifndef robot_qt_T3DATABASE_HPP_
+#define robot_qt_T3DATABASE_HPP_
+
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include "../T3base/T3IOBase.hpp"
+
+
+/**
+  ******************************************************************************
+  * @file
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/02/24
+  * @brief      数据库相关操作
+  ******************************************************************************
+*/
+namespace interface {
+
+enum T3DatabaseIdenCode
+{
+    DatabaseNotOpen,
+    DatabaseOpenSuccess
+};
+class T3Database : public T3IOBase
+{
+public:
+
+    T3Database();
+    ~T3Database();
+
+private:
+    QSqlDatabase _database;
+
+
+    /**
+     * @brief connectDatabase 初始化连接数据库
+     * @return
+     */
+    T3DatabaseIdenCode connectDatabase();
+
+
+};
+}
+
+#endif

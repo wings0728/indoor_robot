@@ -1,0 +1,41 @@
+#include "T3AttendenceDB.hpp"
+
+
+namespace interface
+{
+T3AttendenceDB::T3AttendenceDB()
+{
+
+}
+int T3AttendenceDB::addNewAttendence(model::T3AttendenceModel &attendence)
+{
+  QSqlQuery query_(QSqlDatabase::database(kDatabaseEngine));
+  query_.prepare("insert into T3Attendence values(NULL,?,?,?)");
+  query_.bindValue(0,attendence.getUserInfo().getID());
+  query_.bindValue(1,attendence.getTime());
+  query_.bindValue(2,attendence.getState());
+  int ret_ = query_.exec();
+  if(ret_)
+  {
+
+    query_.exec("select max(id) from T3Attendence");
+    query_.next();
+    return query_.value(0).toInt();
+
+  }else
+  {
+    T3LOG << "insert attendence failed";
+    return -1;
+  }
+
+}
+bool T3AttendenceDB::selectSignIn(model::T3UserInfo userInfo)
+{
+  QSqlQuery query_(QSqlDatabase::database(kDatabaseEngine));
+  query_.prepare("select * from T3Attendence where date(Time) = curdate() and UserInfoId = ?");
+  query_.bindValue(0,userInfo.getID());
+  query_.exec();
+  return query_.next();
+}
+}
+

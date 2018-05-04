@@ -1,0 +1,46 @@
+#ifndef T3TASKSCHEDULING_HPP
+#define T3TASKSCHEDULING_HPP
+/**
+  ******************************************************************************
+  * 公司    T3
+  * 文件名  T3TaskScheduling.hpp
+  * 作者    HXP
+  * 版本    V1.0.0
+  * 日期    2018.04.19
+  * 说明    任务调度类
+  ******************************************************************************
+*/
+
+#include <QThread>
+#include <QMutexLocker>
+#include "ros/ros.h"
+#include "../T3base/T3IOBase.hpp"
+
+namespace task
+{
+
+class T3TaskScheduling : public QThread
+{
+  Q_OBJECT
+public:
+  static T3TaskScheduling* getInstance();
+  ~T3TaskScheduling();
+
+private:
+
+  explicit T3TaskScheduling();
+  int startTaskScheduling();
+
+  void run();
+
+  static T3TaskScheduling      *_taskScheduling;
+
+
+  QMutex                        _lock;
+  bool                          _isCanRun;
+};
+
+}
+
+
+#endif // T3TASKSCHEDULING_HPP

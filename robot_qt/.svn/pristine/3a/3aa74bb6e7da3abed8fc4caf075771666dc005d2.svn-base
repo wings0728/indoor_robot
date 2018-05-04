@@ -1,0 +1,111 @@
+#include "T3TaskDatabase.hpp"
+
+
+namespace interface
+{
+
+
+T3TaskDatabase::T3TaskDatabase()
+{
+  _maxId = 0 ;
+}
+T3TaskDatabase* T3TaskDatabase::_taskDB = new T3TaskDatabase();
+
+T3TaskDatabase* T3TaskDatabase::getInstance()
+{
+  return _taskDB;
+}
+
+T3TaskDatabase::~T3TaskDatabase()
+{
+
+}
+
+int T3TaskDatabase::addNewTask(model::T3TaskModel &task)
+{
+
+
+    QSqlQuery query_;
+    query_.prepare("insert into T3Task values(NULL,?,?,?,?)");
+    query_.bindValue(0,task.getType());
+    query_.bindValue(1,task.getSender().getID());
+    query_.bindValue(2,task.getPriority());
+    query_.bindValue(3,task.getState());
+    int ret_ = query_.exec();
+    if(ret_)
+    {
+      query_.exec("select max(id) from T3Task");
+      query_.next();
+      return query_.value(0).toInt();
+    }else
+    {
+      T3LOG << "insert task failed";
+      return -1;
+    }
+}
+
+int T3TaskDatabase::getTaskList(QList<model::T3TaskModel> &taskList)
+{
+
+}
+
+int T3TaskDatabase::getTaskById(int id,
+                                model::T3TaskModel &task)
+{
+  QSqlQuery query_;
+  query_.prepare("select * from T3Pose where id = ?");
+  query_.bindValue(0,id);
+  bool ret_ = query_.exec();
+  if(!ret_)
+  {
+    T3LOG << "search task failed";
+    return -1;
+  }
+  query_.next();
+  model::eTaskType type_ = (model::eTaskType)query_.value(1).toInt();
+  int senderId_ = query_.value(2).toInt();
+  model::T3UserInfo userInfo_;
+  _userinfoDB.getUserInfoById(senderId_,
+                              userInfo_);
+  int priority_ = query_.value(3).toInt();
+  model::eTaskState state_ = (model::eTaskState)query_.value(4).toInt();
+
+  task.setId(id);
+  task.setPriority(priority_);
+  task.setState(state_);
+  task.setType(type_);
+  task.setSender(userInfo_);
+
+
+}
+
+void T3TaskDatabase::run()
+{
+  ros::Rate loop_rate(1);
+  QSqlQuery query_;
+  while(true)
+  {
+    model::T3TaskModel task_;
+    query_.exec("select max(id) from T3Task");
+    query_.next();
+    int id_ = query_.value(0).toInt();
+
+    if(_maxId < id_)
+    {
+      _maxId = id_;
+      getTaskById(id_,
+                  task_);
+      emit newTask(task_);
+
+    }
+    QMutexLocker locker_(&_lock);
+    if(!_isCanRun)
+    {
+      return ;
+    }
+    loop_rate.sleep();
+  }
+}
+
+}
+

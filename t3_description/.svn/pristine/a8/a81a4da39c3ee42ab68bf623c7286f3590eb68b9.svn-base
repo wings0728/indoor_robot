@@ -1,0 +1,11 @@
+uint8 eGuide_Free = 0
+uint8 eGUide_Success = 1
+uint8 eGuide_Resend = 2
+uint8 eGuide_NewGoal = 3
+uint8 eGuide_Running = 4
+uint8 eGuide_Cancel = 5
+
+
+
+uint8 state
+

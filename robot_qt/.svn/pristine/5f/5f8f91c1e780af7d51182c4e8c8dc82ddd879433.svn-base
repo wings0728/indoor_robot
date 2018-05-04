@@ -1,0 +1,253 @@
+#ifndef T3TASKMODEL_HPP
+#define T3TASKMODEL_HPP
+
+#include "T3UserInfo.hpp"
+#include "T3BaseModel.hpp"
+#include "T3PositionModel.hpp"
+#include "../ros/qnode.hpp"
+#include <QDateTime>
+#include "../hardware/T3Hardware.hpp"
+
+/**
+  ******************************************************************************
+  * @file       T3TaskListModel.hpp
+  * @author     HXP
+  * @version    V1.0.0
+  * @date       2018/04/17
+  * @brief      任务列表
+  ******************************************************************************
+*/
+
+namespace model
+{
+using namespace interface;
+
+enum eTaskState
+{
+  eTFinish,
+  eTExecutory,
+  eTNotStart
+};
+
+enum eTaskType
+{
+  eTSign,
+  eTWakeup,
+  eTVoice,
+  eTLED,
+  eTHardware,
+  eTGuide,
+  eTExpress,
+  eTCharge,
+  eTModeChange,
+  eTInterview,
+  eTShowUI,
+  eTStandby,
+  eTOrigin
+};
+
+enum eUIType
+{
+  eStandbyUI,
+  eGuestUI,
+  eUserUI
+};
+/****** 基类 ******/
+class T3TaskModel: public T3BaseModel
+{
+public:
+  T3TaskModel();
+  T3TaskModel(eTaskType type);
+  T3TaskModel(eTaskType type, T3UserInfo &sender);
+  ~T3TaskModel();
+
+  void setType(eTaskType type);
+  eTaskType getType();
+
+  void setId(int id);
+  int getId();
+
+  T3UserInfo& getSender();
+  void setSender(T3UserInfo& sender);
+
+  void setPriority(int priority);
+  int getPriority();
+
+  void setState(eTaskState state);
+  eTaskState getState();
+protected:
+  int           _id;
+  eTaskType     _type;
+  T3UserInfo    _sender;
+  int           _priority;  //从零开始,数字越小优先级越高.
+  eTaskState    _state;     //任务状态
+
+
+};
+/****** 签到 ******/
+class T3SignTask: public T3TaskModel
+{
+public:
+  T3SignTask();
+  ~T3SignTask();
+};
+
+/****** 唤醒 ******/
+class T3WakeupTask: public T3TaskModel
+{
+public:
+  T3WakeupTask();
+  ~T3WakeupTask();
+};
+
+/****** 语音 ******/
+class T3VoiceTask: public T3TaskModel
+{
+public:
+  T3VoiceTask(eTaskType type, eTaskState state);
+  ~T3VoiceTask();
+
+private:
+  eTaskType _drvierTaskType;  //发起语音任务的任务的任务类型
+  eTaskState _drvierTaskState;//发起语音任务的任务的任务状态
+};
+
+/****** LED ******/
+class T3LEDTask: public T3TaskModel
+{
+public:
+  T3LEDTask(eTaskType type, eTaskState state);
+  ~T3LEDTask();
+
+private:
+  eTaskType _drvierTaskType;  //发起LED任务的任务的任务类型
+  eTaskState _drvierTaskState;//发起LED任务的任务的任务状态
+};
+
+/****** 硬件开关 ******/
+//enum eHardwareType
+//{
+//  eSweeper, //扫地机
+//  ePurifier,//净化器
+//  eHumidifier,//加湿器
+//  eProjector//投影仪
+//};
+//enum eHardwareState
+//{
+//  eHW_Enable = 1,
+//  eHW_Unable = !eHW_Enable
+//};
+class T3HardwareTask: public T3TaskModel
+{
+public:
+  T3HardwareTask(T3UserInfo &sendUser, interface::eHardwareType type, interface::eHardwareState state);
+  ~T3HardwareTask();
+
+  interface::eHardwareType getHwType();
+  void setHwType(interface::eHardwareType hwType);
+
+  interface::eHardwareState getHwState();
+  void setHwState(interface::eHardwareState hwState);
+private:
+  interface::eHardwareType _hwType;
+  interface::eHardwareState _hwState;
+};
+
+/****** 引导 ******/
+
+class T3GuideTask: public T3TaskModel
+{
+public:
+  T3GuideTask(eTaskType type, T3UserInfo &sendUser, T3PositionModel &model);
+  T3GuideTask(T3UserInfo &sendUser,T3PositionModel &model);
+  ~T3GuideTask();
+  void setPlan(QList<std::pair<double, double> >& plan);
+  QList<std::pair<double, double> >& getPlan();//获取路径的数组传参
+
+  void setPosition(T3PositionModel &position);
+  T3PositionModel& getPosition();
+
+  void setGuideState(int guideState);
+  int getGuideState();
+protected:
+  T3PositionModel _position;
+  QList<std::pair<double, double> > _plan;//路径
+  t3_description::GuideState _guideState;
+};
+
+/****** 快递 ******/
+class T3ExpressTask: public T3GuideTask
+{
+public:
+  T3ExpressTask(T3UserInfo &sendUser, T3UserInfo &receiveUser);
+  ~T3ExpressTask();
+  T3UserInfo& getReceiver();
+//  void setReceiver();
+
+private:
+//  T3UserInfo &_sendUser;
+  T3UserInfo _receiver;
+};
+
+/****** 回充 ******/
+class T3ChargeTask: public T3TaskModel
+{
+public:
+  T3ChargeTask();
+  ~T3ChargeTask();
+};
+
+
+
+/****** 模式切换 ******/
+class T3ModeChangeTask: public T3TaskModel
+{
+public:
+  T3ModeChangeTask(T3UserInfo &sendUser,interface::QNode::OprationMode mode);
+  ~T3ModeChangeTask();
+  interface::QNode::OprationMode getMode();
+
+private:
+  interface::QNode::OprationMode _mode;
+};
+
+/****** 面试 ******/
+class T3InterviewTask: public T3GuideTask
+{
+public:
+  T3InterviewTask(T3UserInfo &sendUser, T3UserInfo &interviewer, int post, T3PositionModel &_position);
+  ~T3InterviewTask();
+
+  void setInterviewDate(QDateTime interviewDate);
+  QDateTime getInterviewDate();
+private:
+  QDateTime _interviewDate;//面试时间
+};
+
+/****** 本体界面显示 ******/
+class T3ShowUITask: public T3TaskModel
+{
+public:
+  T3ShowUITask(T3UserInfo &sendUser);
+  ~T3ShowUITask();
+};
+
+/****** 待机界面显示 ******/
+class T3StandbyTask: public T3TaskModel
+{
+public:
+  T3StandbyTask();
+  ~T3StandbyTask();
+};
+
+/****** 回原点 ******/
+class T3OriginTask: public T3TaskModel
+{
+public:
+  T3OriginTask();
+  ~T3OriginTask();
+};
+
+}
+
+#endif // T3TASKLISTMODEL_HPP

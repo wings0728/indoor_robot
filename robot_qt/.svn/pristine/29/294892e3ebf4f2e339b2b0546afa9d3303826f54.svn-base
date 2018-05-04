@@ -1,0 +1,67 @@
+#include "T3Hardware.hpp"
+
+namespace interface
+{
+static T3Hardware* _hw = new T3Hardware();
+
+T3Hardware::T3Hardware()
+{
+  qnode = QNode::getInstance();
+}
+T3Hardware* T3Hardware::getInstance()
+{
+  return _hw;
+}
+
+T3Hardware::~T3Hardware()
+{
+
+}
+
+void T3Hardware::oprationSweeper(eHardwareState state)
+{
+
+}
+
+void T3Hardware::oprationProjector(eHardwareState state)
+{
+
+}
+
+void T3Hardware::oprationHumidifier(eHardwareState state)
+{
+
+}
+
+void T3Hardware::oprationLED()
+{
+
+}
+void T3Hardware::oprationVoice(QString str)
+{
+
+}
+
+void T3Hardware::openSixMicrophone()
+{
+
+}
+
+void T3Hardware::openExpressGate()
+{
+
+}
+
+void T3Hardware::oprationHead(int angle)
+{
+
+}
+
+/******* slots ********/
+void T3Hardware::getMicrophoneFB(int angle)
+{
+ emit sixMicrophoneWakeup(angle);
+}
+
+
+}

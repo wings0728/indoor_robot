@@ -1,0 +1,63 @@
+#ifndef robot_qt_T3BASEUSERMODEL_HPP_
+#define robot_qt_T3BASEUSERMODEL_HPP_
+#include <QByteArray>
+#include <QObject>
+#include "T3BaseModel.hpp"
+
+/**
+  ******************************************************************************
+  * @file
+  * @author  HXP
+  * @version  V1.0.0
+  * @date    2018/04/11
+  * @brief
+  ******************************************************************************
+*/
+
+namespace model {
+
+enum eUserType {
+  unknow,
+  guest,
+  user,
+  admin,
+  developer
+};
+
+enum eUserGender {
+  male,
+  female
+};
+
+class T3BaseUserModel : public T3BaseModel {
+public:
+  explicit T3BaseUserModel();
+  QByteArray getFaceFeature();
+  int getUserAge();
+  QString getUserName();
+  eUserGender getUserGender();
+  eUserType getUserType();
+  void setFaceFeature(QByteArray faceFeature);
+  void setUserAge(int age);
+  void setUserName(QString userName);
+  void setUserGender(eUserGender gender);
+//  void setUserType(eUserType userType);
+  ~T3BaseUserModel();
+
+
+protected:
+  int           _userId;
+  QString       _userName;
+  QString       _userPwd;
+  eUserType     _userType;
+  eUserGender   _userGender;
+  int           _userAge;
+  QString       _userIp;
+  QByteArray    _userFaceFeature;
+
+
+
+};
+}
+
+#endif

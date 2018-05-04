@@ -1,0 +1,34 @@
+#include "T3Wifi.hpp"
+#include "../config/config.hpp"
+
+
+T3Wifi::T3Wifi():
+  T3UserController(kMainBackground)
+{
+  searchWifi();
+  init();
+  //_process = new QProcess();
+}
+
+void T3Wifi::searchWifi()
+{
+  QString search_ = "nmcli d wifi list|awk '{print $1}'";
+  _process = new QProcess(this);
+  _process->start(search_);
+  connect(_process,SIGNAL(readyRead()),this,SLOT(readOut()));
+}
+
+void T3Wifi::readOut()
+{
+  _out += _process->readAll();
+  QStringList outList_ = _out.split("\n");
+  outList_.removeAll("");
+  outList_.removeAll("*");
+  outList_.removeAll("--");
+}
+
+
+void T3Wifi::init()
+{
+
+}

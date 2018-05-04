@@ -1,0 +1,277 @@
+#include "T3Task.hpp"
+#include "../hardware/T3Hardware.hpp"
+#include "../config/config.hpp"
+
+
+
+//有
+
+
+namespace task
+{
+
+  T3Task * T3Task::getInstance()
+  {
+    static T3Task task;
+    task.init();
+    return &task;
+  }
+
+  void T3Task::init()
+  {
+    if(!_inited)
+    {
+      _faceScan = interface::T3FaceScan::getInstance();
+      _hardware = interface::T3Hardware::getInstance();
+      _db       = interface::T3DB::getInstance();
+      _qnode    = interface::QNode::getInstance();
+      _inited = true;
+    }
+  }
+
+  void T3Task::runTask(T3TaskModel &model)
+  {
+    switch(model.getType())
+    {
+      case eTSign:
+        sign(static_cast<T3SignTask &>(model));
+        break;
+
+      case eTWakeup:
+        wakeup(static_cast<T3WakeupTask &>(model));
+        break;
+
+      case eTHardware:
+        HardwareSwitch(static_cast<T3HardwareTask &>(model));
+        break;
+
+      case eTGuide:
+        guide(static_cast<T3GuideTask &>(model));
+        break;
+
+      case eTExpress:
+        sendExpress(static_cast<T3ExpressTask &>(model));
+        break;
+
+      case eTCharge:
+        returnCharge(static_cast<T3ChargeTask &>(model));
+        break;
+
+      case eTModeChange:
+        modeChange(static_cast<T3ModeChangeTask &>(model));
+        break;
+
+      case eTInterview:
+        interview(static_cast<T3InterviewTask &>(model));
+        break;
+
+      case eTShowUI:
+        showUI(static_cast<T3ShowUITask &>(model));
+        break;
+
+      case eTStandby:
+        standby(static_cast<T3StandbyTask &>(model));
+        break;
+
+      case eTOrigin:
+        origin(static_cast<T3OriginTask &>(model));
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  void stopTask(T3TaskModel &model)
+  {
+    switch(model.getType())
+    {
+      case eTStandby:
+        //standby(static_cast<T3StandbyTask &>(model));
+        break;
+
+      default:
+        break;
+    }
+  }
+  //签到
+  void T3Task::sign(T3SignTask &task)
+  {
+    //开启人脸识别
+    //接受人脸识别信号，创建签到槽
+    connect(_faceScan,
+            &interface::T3FaceScan::getNewFace,
+            this,
+            &T3Task::signSlot);
+  }
+
+  void T3Task::signSlot(T3UserInfo &userInfo)
+  {
+    //收到新的人脸信息
+    //对数据库接口传入人脸信息，返回今天是否签到
+    bool isSignal = _db->userIsSign(userInfo);
+    //如果今天没有签到，则对数据库写入签到
+
+    //发送签到成功信号，并语音播报|LED
+    if(isSignal)
+    {
+      //发送信号
+      emit signSuccess();
+      //语音播报
+      _hardware->oprationVoice(kSignSuccess_Voice);
+      //LED
+      _hardware->oprationLED();
+    }
+  }
+  //唤醒
+  void T3Task::wakeup(T3WakeupTask &task)
+  {
+    //开启六麦克风阵列
+    _hardware->openSixMicrophone();
+    //接受六麦克风阵列信号，创建唤醒槽
+    connect(_hardware,
+            &interface::T3Hardware::sixMicrophoneWakeup,
+            this,
+            &T3Task::wakeupSlot);
+  }
+  void T3Task::wakeupSlot(int angle)
+  {
+    //收到六麦克风信号
+    bool isFree = _db->robotIsFree();
+    //判断目前是否空闲，如果空闲调用特定语音或LED
+    if(isFree)
+    {
+      _hardware->oprationHead(angle);
+      _hardware->oprationVoice(kWakeup_Free_Voice);
+    }else //如果不空闲，调用特定语音或LED
+    {
+      _hardware->oprationVoice(kWakeup_Busy_Voice);
+      _hardware->oprationLED();
+    }
+
+    //发送唤醒成功信号
+    emit beWakeup();
+  }
+  //硬件开关
+  void T3Task::HardwareSwitch(T3HardwareTask &task)
+  {
+    //根据硬件枚举和状态值，开关特定硬件
+    switch(task.getHwType())
+    {
+      case interface::eSweeper:
+        _hardware->oprationSweeper(task.getHwState());
+        break;
+
+      case interface::eProjector:
+        _hardware->oprationProjector(task.getHwState());
+        break;
+      case interface::eHumidifier:
+        _hardware->oprationHumidifier(task.getHwState());
+        break;
+
+      default:
+        break;
+
+    }
+  }
+  //寄快递
+  void T3Task::sendExpress(T3ExpressTask &task)
+  {
+    //获取目标位置信息
+    T3PositionModel position = task.getPosition();
+    //调用ros接口
+//    _qnode->
+    //成功条件：到达指定目的地|扫描到特定人脸
+  }
+  void T3Task::expressSlot()
+  {
+    //成功时，弹出界面，可能需要配合LED和语音
+    //失败时，进行语音播报
+    //发送送件成功信号
+  }
+  //回充
+  void T3Task::returnCharge(T3ChargeTask &task)
+  {
+    //调用ros接口
+    //成功条件：到达指定目的地
+  }
+  void T3Task::chargeSlot()
+  {
+    //成功时，弹出界面，可能需要配合LED和语音
+    //失败时，进行语音播报
+    //发送回充到达信号
+  }
+  //引导
+  void T3Task::guide(T3GuideTask &task)
+  {
+    //获取目标位置信息
+    //调用ros接口
+    //成功条件：到达指定目的地
+  }
+  void T3Task::guideSlot()
+  {
+    //成功时，弹出界面，可能需要配合LED和语音
+    //失败时，进行语音播报
+    //引导成功信号发送
+  }
+  //模式切换
+  void T3Task::modeChange(T3ModeChangeTask &task)
+  {
+    //拿取任务中的模式变量
+    //调用相应ros接口
+  }
+  //面试
+  void T3Task::interview(T3InterviewTask &task)
+  {
+    //获取目标位置信息
+    //调用ros接口
+    //成功条件：到达指定目的地
+  }
+  void T3Task::interviewSlot()
+  {
+    //成功时，弹出界面，可能需要配合LED和语音
+    //失败时，进行语音播报
+    //面试引导成功信号发送
+  }
+  //界面显示
+  void T3Task::showUI(T3ShowUITask &task)
+  {
+    //拿取任务中的人脸信息
+    //根据人脸信息生成对应的界面
+  }
+  void T3Task::showUISlot()
+  {
+    //当显示界面收到结束信号，调用此方法
+    //删除界面
+    //显示待机
+  }
+  //待机
+  void T3Task::standby(T3StandbyTask &task)
+  {
+    //调用待机界面
+  }
+  void T3Task::standbySlot()
+  {
+    //当待机界面扫描到人脸时调用界面显示任务
+    //待机结束信号发送
+  }
+  //回原点
+  void T3Task::origin(T3OriginTask &origin)
+  {
+    //调用ros接口
+    //成功条件：到达指定目的地
+  }
+  void T3Task::originSlot()
+  {
+    //成功时，弹出界面，可能需要配合LED和语音
+    //失败时，进行语音播报
+    //回原点成功信号发送
+  }
+
+  T3Task::~T3Task()
+  {
+    _faceScan = NULL;
+    _hardware = NULL;
+  }
+}
+//123

@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="t3_goal" type="t3_goal" name="t3_goal" output="screen">
+	<rosparam file="$(find t3_goal)/param/goals_params.yaml" command="load" />
+  </node>
+</launch>
